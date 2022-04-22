@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for
 from flask import request, session
 from datetime import timedelta
+import time
 import mysql.connector
 
 app = Flask(__name__)
@@ -63,9 +64,7 @@ def login():
         sql = f'select employee_id, name, deleted_datetime, management \
             from employee_tbl where mail_address=\'{mail_address}\'\
             and password=\'{password}\''
-        print(sql)
         row = select_one(sql)
-        print(row)
         tbl = ['employee_id', 'name', 'deleted_datetime', 'management']
         errors = ['ログインに失敗しました。',
                 'メールアドレスとパスワードをご確認ください。']
@@ -74,16 +73,24 @@ def login():
                 session[t] = r
                 if t == 'deleted_datetime' and r is not None:
                     session.clear()
-                    return render_template('login.html', errors=errors)
+                    session['errors'] = errors
+                    session['start'] = time.time()
+                    return redirect(url_for('login'))
             return redirect(url_for('list'))
         else:
-            #TODO errors送ったあとリロードするとフォームを再送してしまうところの改善
-            # トークンを利用する
-            return render_template('login.html', errors=errors)
+            #TODOトークンを利用する
+            session['errors'] = errors
+            session['start'] = time.time()
+            return redirect(url_for('login'))
     else:
         if 'name' in session:
             return redirect(url_for('list'))
         else:
+            end = time.time()
+            if 'start' in session:
+                # セッションに残すエラー文の生存時間は3秒
+                if end - session['start'] >= 3:
+                    session.clear()
             return render_template('login.html')
 
 @app.route('/user/list', methods=['GET','POST'])

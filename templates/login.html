@@ -16,8 +16,8 @@
         <form action="/login" method="POST">
             <h1>ユーザー管理システム</h1>
             <div class="errors">
-                {% if errors %}
-                    {% for error in errors %}
+                {% if session['errors'] %}
+                    {% for error in session['errors'] %}
                         <div class="error"><p>{{ error }}</p></div>
                     {% endfor %}
                 {% endif %}
