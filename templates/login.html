@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/login.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/75eed8fdb7.js" crossorigin="anonymous"></script>
+    <title>ユーザー管理システム</title>
+</head>
+<body>
+    <div class="form-wrapper">
+        <form action="/login" method="POST">
+            <h1>ユーザー管理システム</h1>
+            <div class="errors">
+                {% if errors %}
+                    {% for error in errors %}
+                        <div class="error"><p>{{ error }}</p></div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <p>メールアドレスを入力してください</p>
+            <input class="form-item" type="text" name="mail_address" required>
+            <p>パスワードを入力してください</p>
+            <input class="form-item" type="password" name="password" required>
+            <input class="form-submit" type="submit" value="送信">
+        </form>
+    </div>
+</body>
+</html>

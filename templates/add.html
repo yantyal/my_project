@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/add.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
+    <title>ユーザー管理システム</title>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-left"><a href="/user/list">ユーザー管理システム</a></div>
+            <div class="header-right">
+                <ul>
+                    <li><i class="fas fa-user"></i>{{ session['name'] }}</li>
+                    <li><a href="/logout">ログアウト</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="form-wrapper">
+        <form action="/user/add" method="POST">
+            <h1>新規登録</h1>
+            <div class="errors">
+                {% if errors %}
+                    {% for error in errors %}
+                        <div class="error"><p>{{ error }}</p></div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <p>名前を入力してください</p>
+            <input class="form-item" type="text" name="name" required>
+            <p>所属を選択してください</p>
+            <div class="sort-item">
+                <select name="belong_id">
+                    <option value="0">不明</option>
+                    <option value="1">総務課</option>
+                    <option value="2">BS事業部</option>
+                    <option value="3">CS事業部</option>
+                    <option value="4">営業課</option>
+                    <option value="5">1課</option>
+                    <option value="6">2課</option>
+                    <option value="7">3課</option>
+                    <option value="8">4課</option>
+                    <option value="9">5課</option>
+                </select>
+            </div>
+            <p>メールアドレスを入力してください</p>
+            <input class="form-item" type="text" name="mail_address" required>
+            <p>パスワードを入力してください</p>
+            <input class="form-item" type="password" name="password" required>
+            <p>管理者権限を付与する場合はチェックしてください</p>
+            <div class="management-checkbox">
+                <label for="management">管理者権限</label>
+                <input type="checkbox" name="management" value="Y">
+            </div>
+            <input class="form-submit" type="submit" value="新規登録">
+        </form>
+    </div>
+    <script src="https://kit.fontawesome.com/75eed8fdb7.js" crossorigin="anonymous"></script>
+</body>
+</html>

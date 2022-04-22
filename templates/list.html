@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/list.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
+    <title>ユーザー管理システム</title>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-left"><a href="/user/list">ユーザー管理システム</a></div>
+            <div class="header-right">
+                <ul>
+                    <li>
+                        <a href="/user/edit/{{ session['employee_id'] }}">
+                            <i class="fas fa-user">{{ session['name'] }}</i>
+                        </a>
+                    </li>
+                    <li><a href="/logout">ログアウト</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="form-wrapper">
+            <form action="{{ url_for('list') }}" method="POST">
+                <div class="sort">
+                    <div class="sort-item">
+                        <div>社員ID</div>
+                        <input class="form-item" type="text" name="emp_id">
+                    </div>
+                    <div class="sort-item">
+                        <div>名前</div>
+                        <input class="form-item name" type="text" name="name">
+                    </div>
+                    <div class="sort-item">
+                        <div>所属</div>
+                        <select name="belong_id">
+                            <option value="0">不明</option>
+                            <option value="1">総務課</option>
+                            <option value="2">BS事業部</option>
+                            <option value="3">CS事業部</option>
+                            <option value="4">営業課</option>
+                            <option value="5">1課</option>
+                            <option value="6">2課</option>
+                            <option value="7">3課</option>
+                            <option value="8">4課</option>
+                            <option value="9">5課</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="submit">
+                    <div class="submit-item">
+                        <input class="form-submit" type="button" value="クリア">
+                    </div>
+                    <div class="submit-item">
+                        <button class="form-submit" type="submit">
+                            <i class="fas fa-search"></i>検索
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="list">
+            {% if errors %}
+                <div class="errors">
+                    {% for error in errors %}
+                        <div class="error"><p>{{ error }}</p></div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="list-title"><i class="fas fa-angle-double-right"></i>社員一覧リスト</div>
+            <div class="add"><a href="/user/add"><i class="fas fa-plus"></i>新規登録</a></div>
+            <table>
+                <tr>
+                    <th>社員ID</th>
+                    <th>名前</th>
+                    <th>所属</th>
+                    <th>メールアドレス</th>
+                    <th>パスワード</th>
+                    <th>管理者</th>
+                    <th>編集</th>
+                    <th>削除</th>
+                </tr>
+                {% if users %}
+                    {% for user in users %}
+                        {% if user['management'] == 'Y' %}
+                            <tr class="management-color">
+                                <td>{{ user['employee_id'] }}</td>
+                                <td>{{ user['name'] }}</td>
+                                <td>{{ user['belong_name'] }}</td>
+                                <td>{{ user['mail_address'] }}</td>
+                                {% if session['management'] == 'Y' %}
+                                    <td>{{ user['password'] }}</td>
+                                {% else %}
+                                    <td class="password-mask">●●●</td>
+                                {% endif %}
+                                <td><i class="fas fa-check-circle"></i></td>
+                                <td>
+                                    <form action="/user/edit/{{user['employee_id']}}" method="POST">
+                                        <button type="submit" class="button-item">
+                                            <i class="fas fa-pen-fancy"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="/user/delete/{{user['employee_id']}}" method="POST">
+                                        <button type="submit" class="button-item">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{ user['employee_id'] }}</td>
+                                <td>{{ user['name'] }}</td>
+                                <td>{{ user['belong_name'] }}</td>
+                                <td>{{ user['mail_address'] }}</td>
+                                {% if session['management'] == 'Y' %}
+                                    <td>{{ user['password'] }}</td>
+                                {% else %}
+                                    <td class="password-mask">●●●</td>
+                                {% endif %}
+                                <td>{{ user['management'] }}</td>
+                                <td>
+                                    <form action="/user/edit/{{user['employee_id']}}" method="POST">
+                                        <button type="submit" class="button-item">
+                                            <i class="fas fa-pen-fancy"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="/user/delete/{{user['employee_id']}}" method="POST">
+                                        <button type="submit" class="button-item">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </table>
+            <div class="clear"></div>
+        </div>
+    </main>
+    <script src="https://kit.fontawesome.com/75eed8fdb7.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
