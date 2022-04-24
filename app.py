@@ -10,21 +10,22 @@ app.permanent_session_lifetime = timedelta(minutes=3) # sessionの生存時間
 
 def connect_db():
     conn = mysql.connector.connect(
-            host = 'localhost',
-            user = 'user21',
-            passwd = 'user21(PASS)',
-            db = 'employee'
+        host = 'localhost',
+        user = 'user21',
+        passwd = 'user21(PASS)',
+        db = 'employee',
+        auth_plugin="mysql_native_password"
     )
     return conn
 
 # select文を一行返すメソッド
-def select_one(sql):
+def select_one(sql, *args):
     row = None
     try:
-            conn = connect_db()
-            cursor = conn.cursor()
-            cursor.execute(sql)
-            row = cursor.fetchone()
+        conn = connect_db()
+        cursor = conn.cursor()
+        cursor.execute(sql % (args))
+        row = cursor.fetchone()
     except(mysql.connector.errors.ProgrammingError) as e:
             print(e)
     return row
@@ -33,10 +34,10 @@ def select_one(sql):
 def select_all(sql):
     rows = None
     try:
-            conn = connect_db()
-            cursor = conn.cursor()
-            cursor.execute(sql)
-            rows = cursor.fetchall()
+        conn = connect_db()
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        rows = cursor.fetchall()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)
     return rows
@@ -61,10 +62,11 @@ def login():
     if request.method == 'POST':
         mail_address = request.form['mail_address']
         password = request.form['password']
-        sql = f'select employee_id, name, deleted_datetime, management \
-            from employee_tbl where mail_address=\'{mail_address}\'\
-            and password=\'{password}\''
-        row = select_one(sql)
+        sql = "select employee_id, name, deleted_datetime, management \
+            from employee_tbl where mail_address='%s' \
+            and password='%s'"
+        print(sql, mail_address, password)
+        row = select_one(sql, mail_address, password)
         tbl = ['employee_id', 'name', 'deleted_datetime', 'management']
         errors = ['ログインに失敗しました。',
                 'メールアドレスとパスワードをご確認ください。']
@@ -100,10 +102,10 @@ def list():
         if request.method == 'GET':
             sql = '''
                 select e.employee_id, e.name, e.mail_address, e.password,
-                coalesce(e.management, ''), coalesce(e.deleted_datetime, ''), 
-                coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name 
-                from employee_tbl as e inner join belong_master_tbl as b  
-                where e.belong_id = b.belong_id  
+                coalesce(e.management, ''), coalesce(e.deleted_datetime, ''),
+                coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name
+                from employee_tbl as e inner join belong_master_tbl as b
+                where e.belong_id = b.belong_id
                 order by management desc, employee_id
                 '''
         else:
@@ -112,19 +114,19 @@ def list():
             belong_id = request.form['belong_id']
             prepared_sql = ''
             if emp_id:
-                prepared_sql += ' and e.employee_id=' + emp_id 
+                prepared_sql += ' and e.employee_id=' + emp_id
             if name:
                 prepared_sql += ' and e.name like \'%' + name + '%\''
             if belong_id != '0':
                 prepared_sql += ' and e.belong_id=' + belong_id + ''
             sql = '''
                 select e.employee_id, e.name, e.mail_address, e.password,
-                coalesce(e.management, ''), coalesce(e.deleted_datetime, ''), 
-                coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name 
-                from employee_tbl as e inner join belong_master_tbl as b  
-                where e.belong_id = b.belong_id 
+                coalesce(e.management, ''), coalesce(e.deleted_datetime, ''),
+                coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name
+                from employee_tbl as e inner join belong_master_tbl as b
+                where e.belong_id = b.belong_id
                 ''' \
-                + prepared_sql + ' order by management desc, employee_id'                
+                + prepared_sql + ' order by management desc, employee_id'
         rows = select_all(sql)
         tbl = ['employee_id', 'name', 'mail_address', 'password', 'management',
                 'deleted_datetime', 'image_file_path','belong_id', 'belong_name']
@@ -142,7 +144,7 @@ def list():
         else:
             errors = ['リストの取得に失敗しました。']
             return render_template('list.html', errors=errors, users=users)
-        return render_template('list.html', errors=errors, users=users) 
+        return render_template('list.html', errors=errors, users=users)
     else:
         return redirect(url_for('login'))
 
@@ -157,9 +159,9 @@ def add():
             management = request.form.getlist('management')
             if len(management) != 0:
                 management = management[0]
-            sql = f'select * from employee_tbl where mail_address=\'{mail_address}\'\
-                    and password=\'{password}\''
-            row = select_one(sql)
+            sql = f'select * from employee_tbl where mail_address=%s\
+                    and password=%s'
+            row = select_one(sql, mail_address, password)
             if row is None:
                 if management == 'Y':
                     sql = f'insert into employee_tbl(name, belong_id, mail_address, password, management)\
@@ -182,12 +184,11 @@ def add():
 @app.route('/user/edit/<employee_id>', methods=['GET', 'POST'])
 def edit(employee_id):
     if 'name' in session:
-        sql = f'select e.name, e.belong_id, e.mail_address, e.password, e.management, \
+        sql = "select e.name, e.belong_id, e.mail_address, e.password, e.management, \
             b.belong_name\
             from employee_tbl as e inner join belong_master_tbl as b \
-            where e.belong_id = b.belong_id and employee_id={employee_id}'
-        print(sql)
-        row = select_one(sql)
+            where e.belong_id = b.belong_id and employee_id='%s'"
+        row = select_one(sql, employee_id)
         tbl = ['name', 'belong_id', 'mail_address', 'password', 'management', 'belong_name']
         user = {}
         if row is not None:
