@@ -24,19 +24,19 @@ def select_one(sql, *args):
     try:
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute(sql % (args))
+        cursor.execute(sql, [arg for arg in args]) # なぜかlist(args)がエラーになる
         row = cursor.fetchone()
     except(mysql.connector.errors.ProgrammingError) as e:
             print(e)
     return row
 
 # select文を複数行返すメソッド
-def select_all(sql):
+def select_all(sql, *args):
     rows = None
     try:
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute(sql)
+        cursor.execute(sql, [arg for arg in args]) # なぜかlist(args)がエラーになる
         rows = cursor.fetchall()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)
@@ -44,11 +44,11 @@ def select_all(sql):
 
 # insert文, delete文を実行するメソッド
 # update文はまだ試していない
-def change_tbl(sql):
+def change_tbl(sql, *args):
     try:
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute(sql)
+        cursor.execute(sql, [arg for arg in args]) # なぜかlist(args)がエラーになる
         conn.commit()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)
@@ -62,10 +62,8 @@ def login():
     if request.method == 'POST':
         mail_address = request.form['mail_address']
         password = request.form['password']
-        sql = "select employee_id, name, deleted_datetime, management \
-            from employee_tbl where mail_address='%s' \
-            and password='%s'"
-        print(sql, mail_address, password)
+        sql = "select employee_id, name, deleted_datetime, management from employee_tbl \
+            where mail_address=%s and password=%s"
         row = select_one(sql, mail_address, password)
         tbl = ['employee_id', 'name', 'deleted_datetime', 'management']
         errors = ['ログインに失敗しました。',
@@ -114,11 +112,11 @@ def list():
             belong_id = request.form['belong_id']
             prepared_sql = ''
             if emp_id:
-                prepared_sql += ' and e.employee_id=' + emp_id
+                prepared_sql += ' and e.employee_id=%s'
             if name:
-                prepared_sql += ' and e.name like \'%' + name + '%\''
+                prepared_sql += ' and e.name like \'%' + '%s' + '%\''
             if belong_id != '0':
-                prepared_sql += ' and e.belong_id=' + belong_id + ''
+                prepared_sql += ' and e.belong_id=%s'
             sql = '''
                 select e.employee_id, e.name, e.mail_address, e.password,
                 coalesce(e.management, ''), coalesce(e.deleted_datetime, ''),
