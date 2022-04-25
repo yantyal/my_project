@@ -21,37 +21,46 @@ def connect_db():
 # select文を一行返すメソッド
 def select_one(sql, *args):
     row = None
+    conn = connect_db()
+    cursor = conn.cursor()
     try:
-        conn = connect_db()
-        cursor = conn.cursor()
         cursor.execute(sql, [arg for arg in args]) # なぜかlist(args)がエラーになる
         row = cursor.fetchone()
     except(mysql.connector.errors.ProgrammingError) as e:
             print(e)
+    finally:
+        cursor.close()
+        conn.close()
     return row
 
 # select文を複数行返すメソッド
 def select_all(sql, *args):
     rows = None
+    conn = connect_db()
+    cursor = conn.cursor()
     try:
-        conn = connect_db()
-        cursor = conn.cursor()
         cursor.execute(sql, [arg for arg in args]) # なぜかlist(args)がエラーになる
         rows = cursor.fetchall()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)
+    finally:
+        cursor.close()
+        conn.close()
     return rows
 
 # insert文, delete文を実行するメソッド
 # update文はまだ試していない
 def change_tbl(sql, *args):
+    conn = connect_db()
+    cursor = conn.cursor()
     try:
-        conn = connect_db()
-        cursor = conn.cursor()
         cursor.execute(sql, [arg for arg in args]) # なぜかlist(args)がエラーになる
         conn.commit()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.route('/')
 def index():
@@ -157,8 +166,7 @@ def add():
             management = request.form.getlist('management')
             if len(management) != 0:
                 management = management[0]
-            sql = f'select * from employee_tbl where mail_address=%s\
-                    and password=%s'
+            sql = 'select * from employee_tbl where mail_address=%s and password=%s'
             row = select_one(sql, mail_address, password)
             if row is None:
                 if management == 'Y':
