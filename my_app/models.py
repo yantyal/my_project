@@ -1,4 +1,4 @@
-import mysql.connector
+import mysql.connector, json
 
 def connect_db():
     conn = mysql.connector.connect(
@@ -54,3 +54,26 @@ def change_tbl(sql, *args):
     finally:
         cursor.close()
         conn.close()
+
+# SQL文を発行するメソッド、条件によりSQL文が変わる場合は配列を渡す
+def issue_sql(sql_name, dict_list=[]):
+    with open('sql.json', 'r') as file:
+        sqls = json.load(file)
+    sql = ''
+    for index in sqls[sql_name]:
+        if type(sqls[sql_name][index]) == dict:
+            for dl in dict_list:
+                sql += sqls[sql_name][index][dl]
+        else:
+            sql += sqls[sql_name][index]
+    return sql
+
+def create_dict_list(employee_id, name, belong_id):
+    dict_list = []
+    if employee_id:
+        dict_list.append("0")
+    if name:
+        dict_list.append("1")
+    if belong_id != '0':
+        dict_list.append("2")
+    return dict_list

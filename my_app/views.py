@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for
 from flask import request, session
 from datetime import timedelta, datetime
 import time
-from my_app.models import select_one, select_all, change_tbl
+from my_app.models import create_dict_list, select_one, select_all, change_tbl, issue_sql
 
 app = Flask(__name__)
 app.secret_key = 'abcdefghijklmn'
@@ -17,8 +17,7 @@ def login():
     if request.method == 'POST':
         mail_address = request.form['mail_address']
         password = request.form['password']
-        sql = "select employee_id, name, deleted_datetime, management from employee_tbl \
-            where mail_address=%s and password=%s"
+        sql = issue_sql('login')
         row = select_one(sql, mail_address, password)
         tbl = ['employee_id', 'name', 'deleted_datetime', 'management']
         errors = ['ログインに失敗しました。',
@@ -53,38 +52,14 @@ def list():
     if 'name' in session:
         sql = ''
         if request.method == 'GET':
-            sql = '''
-                select e.employee_id, e.name, e.mail_address, e.password,
-                coalesce(e.management, ''), coalesce(e.deleted_datetime, ''),
-                coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name
-                from employee_tbl as e inner join belong_master_tbl as b
-                where e.belong_id = b.belong_id
-                and e.deleted_datetime is null
-                order by management desc, employee_id
-                '''
+            sql = issue_sql('list')
             rows = select_all(sql)
         else:
             employee_id = request.form['employee_id']
             name = request.form['name']
             belong_id = request.form['belong_id']
-            prepared_sql = ''
-            if employee_id:
-                prepared_sql += ' and e.employee_id=%s'
-            if name:
-                # TODO %sを%で囲えるようにする
-                prepared_sql += ' and e.name like %s'
-            if belong_id != '0':
-                prepared_sql += ' and e.belong_id=%s'
-            sql = '''
-                select e.employee_id, e.name, e.mail_address, e.password,
-                coalesce(e.management, ''), coalesce(e.deleted_datetime, ''),
-                coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name
-                from employee_tbl as e inner join belong_master_tbl as b
-                where e.belong_id = b.belong_id
-                and e.deleted_datetime is null
-                ''' \
-                + prepared_sql + ' order by management desc, employee_id'
-            print(sql)
+            dict_list = create_dict_list(employee_id, name, belong_id)
+            sql = issue_sql('sort', dict_list)
             rows = select_all(sql, employee_id, name, belong_id)
         tbl = ['employee_id', 'name', 'mail_address', 'password', 'management',
                 'deleted_datetime', 'image_file_path','belong_id', 'belong_name']
@@ -117,16 +92,14 @@ def add():
             management = request.form.getlist('management')
             if len(management) != 0:
                 management = management[0]
-            sql = 'select * from employee_tbl where mail_address=%s and password=%s'
+            sql = issue_sql('login')
             row = select_one(sql, mail_address, password)
             if row is None:
                 if management == 'Y':
-                    sql = 'insert into employee_tbl(name, belong_id, mail_address, password, management)\
-                        values(%s, %s, %s, %s, %s)'
+                    sql = issue_sql('add', ["0"])
                     change_tbl(sql, name, belong_id, mail_address, password, management)
                 else:
-                    sql = 'insert into employee_tbl(name, belong_id, mail_address, password)\
-                        values(%s, %s, %s, %s)'
+                    sql = issue_sql('add', ["1"])
                     change_tbl(sql, name, belong_id, mail_address, password)
             else:
                 errors = ['登録できないメールアドレスと',
