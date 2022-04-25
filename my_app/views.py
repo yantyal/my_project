@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for
 from flask import request, session
-from datetime import timedelta
+from datetime import timedelta, datetime
 import time
 from my_app.models import select_one, select_all, change_tbl
 
@@ -59,6 +59,7 @@ def list():
                 coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name
                 from employee_tbl as e inner join belong_master_tbl as b
                 where e.belong_id = b.belong_id
+                and e.deleted_datetime is null
                 order by management desc, employee_id
                 '''
         else:
@@ -78,6 +79,7 @@ def list():
                 coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name
                 from employee_tbl as e inner join belong_master_tbl as b
                 where e.belong_id = b.belong_id
+                and e.deleted_datetime is null
                 ''' \
                 + prepared_sql + ' order by management desc, employee_id'
         rows = select_all(sql)
@@ -116,12 +118,13 @@ def add():
             row = select_one(sql, mail_address, password)
             if row is None:
                 if management == 'Y':
-                    sql = f'insert into employee_tbl(name, belong_id, mail_address, password, management)\
-                        values(\'{name}\', {belong_id}, \'{mail_address}\', \'{password}\' , \'{management}\')'
+                    sql = 'insert into employee_tbl(name, belong_id, mail_address, password, management)\
+                        values(%s, %s, %s, %s, %s)'
+                    change_tbl(sql, name, belong_id, mail_address, password, management)
                 else:
-                        sql = f'insert into employee_tbl(name, belong_id, mail_address, password)\
-                        values(\'{name}\', {belong_id}, \'{mail_address}\', \'{password}\' )'
-                change_tbl(sql)
+                    sql = 'insert into employee_tbl(name, belong_id, mail_address, password)\
+                        values(%s, %s, %s, %s)'
+                    change_tbl(sql, name, belong_id, mail_address, password)
             else:
                 errors = ['登録できないメールアドレスと',
                         'パスワードです']
@@ -146,7 +149,6 @@ def edit(employee_id):
         if row is not None:
             for t, r in zip(tbl, row):
                 user[t] = r
-        print(user)
         return render_template('edit.html', user=user)
     else:
         return redirect(url_for('login'))
@@ -174,8 +176,9 @@ def edit_result():
 @app.route('/user/delete/<employee_id>', methods=['POST'])
 def delete(employee_id):
     # TODO delete文を実行するのではなく、deleted_datetimeに削除時の時間を追加
-    sql = f'delete from employee_tbl where employee_id=\'{employee_id}\''
-    change_tbl(sql)
+    deleted_datetime = datetime.now().strftime('%Y-%m-%d')
+    sql = 'update employee_tbl set deleted_datetime=%s where employee_id=%s'
+    change_tbl(sql, deleted_datetime, employee_id)
     return redirect(url_for('list'))
 
 @app.route('/logout')
