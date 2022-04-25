@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
+    <script src="{{url_for('static', filename = 'js/confirm.js')}}"></script>
     <title>ユーザー管理システム</title>
 </head>
 
@@ -111,7 +112,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form action="/user/delete/{{user['employee_id']}}" method="POST">
+                                    <form action="/user/delete/{{user['employee_id']}}" method="POST" onSubmit="return delete_check()">
                                         <button type="submit" class="button-item">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -138,7 +139,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form action="/user/delete/{{user['employee_id']}}" method="POST">
+                                    <form action="/user/delete/{{user['employee_id']}}" method="POST" onSubmit="return delete_check()">
                                         <button type="submit" class="button-item">
                                             <i class="fas fa-trash"></i>
                                         </button>
