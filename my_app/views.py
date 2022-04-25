@@ -62,15 +62,17 @@ def list():
                 and e.deleted_datetime is null
                 order by management desc, employee_id
                 '''
+            rows = select_all(sql)
         else:
-            emp_id = request.form['emp_id']
+            employee_id = request.form['employee_id']
             name = request.form['name']
             belong_id = request.form['belong_id']
             prepared_sql = ''
-            if emp_id:
+            if employee_id:
                 prepared_sql += ' and e.employee_id=%s'
             if name:
-                prepared_sql += ' and e.name like \'%' + '%s' + '%\''
+                # TODO %sを%で囲えるようにする
+                prepared_sql += ' and e.name like %s'
             if belong_id != '0':
                 prepared_sql += ' and e.belong_id=%s'
             sql = '''
@@ -82,7 +84,8 @@ def list():
                 and e.deleted_datetime is null
                 ''' \
                 + prepared_sql + ' order by management desc, employee_id'
-        rows = select_all(sql)
+            print(sql)
+            rows = select_all(sql, employee_id, name, belong_id)
         tbl = ['employee_id', 'name', 'mail_address', 'password', 'management',
                 'deleted_datetime', 'image_file_path','belong_id', 'belong_name']
         users = []
@@ -139,12 +142,12 @@ def add():
 @app.route('/user/edit/<employee_id>', methods=['GET', 'POST'])
 def edit(employee_id):
     if 'name' in session:
-        sql = "select e.name, e.belong_id, e.mail_address, e.password, e.management, \
-            b.belong_name\
+        sql = "select e.employee_id, e.name, e.belong_id, e.mail_address, e.password, \
+            e.management, b.belong_name\
             from employee_tbl as e inner join belong_master_tbl as b \
             where e.belong_id = b.belong_id and employee_id=%s"
         row = select_one(sql, employee_id)
-        tbl = ['name', 'belong_id', 'mail_address', 'password', 'management', 'belong_name']
+        tbl = ['employee_id', 'name', 'belong_id', 'mail_address', 'password', 'management', 'belong_name']
         user = {}
         if row is not None:
             for t, r in zip(tbl, row):
@@ -161,21 +164,23 @@ def edit_result():
         mail_address = request.form['mail_address']
         password = request.form['password']
         management = request.form.getlist('management')
+        if len(management) != 0:
+            management = management[0]
+            sql = 'update employee_tbl set name=%s, belong_id=%s, mail_address=%s, \
+            password=%s, management=%s where employee_id=%s'
+        else:
+            management = None
+            sql = 'update employee_tbl set name=%s, belong_id=%s, mail_address=%s, \
+            password=%s where employee_id=%s'
+        employee_id = request.form['employee_id']
+        # TODO 同じアドレスとパスワードが使われていると変更できないようにする
+        change_tbl(sql, name, belong_id, mail_address, password, management, employee_id)
         return redirect(url_for('list'))
     else:
         return redirect(url_for('login'))
-# name = request.form['name']
-#     belong_id = request.form['belong_id']
-#     mail_address = request.form['mail_address']
-#     password = request.form['password']
-#     sql = f'update employee_tbl set name=\' {name} \',\
-#         belong_id=\' {belong_id} \', mail_address=\' {mail_address} \
-#         password=\' {password} \' where employee_id=\' {employee_id} \''
-#     change_tbl(sql)
 
 @app.route('/user/delete/<employee_id>', methods=['POST'])
 def delete(employee_id):
-    # TODO delete文を実行するのではなく、deleted_datetimeに削除時の時間を追加
     deleted_datetime = datetime.now().strftime('%Y-%m-%d')
     sql = 'update employee_tbl set deleted_datetime=%s where employee_id=%s'
     change_tbl(sql, deleted_datetime, employee_id)
