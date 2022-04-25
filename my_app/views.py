@@ -148,11 +148,12 @@ def edit(employee_id):
             where e.belong_id = b.belong_id and employee_id=%s"
         row = select_one(sql, employee_id)
         tbl = ['employee_id', 'name', 'belong_id', 'mail_address', 'password', 'management', 'belong_name']
+        errors = []
         user = {}
         if row is not None:
             for t, r in zip(tbl, row):
                 user[t] = r
-        return render_template('edit.html', user=user)
+        return render_template('edit.html', errors=errors, user=user)
     else:
         return redirect(url_for('login'))
 
@@ -164,16 +165,20 @@ def edit_result():
         mail_address = request.form['mail_address']
         password = request.form['password']
         management = request.form.getlist('management')
-        if len(management) != 0:
-            management = management[0]
-            sql = 'update employee_tbl set name=%s, belong_id=%s, mail_address=%s, \
-            password=%s, management=%s where employee_id=%s'
-        else:
-            management = None
-            sql = 'update employee_tbl set name=%s, belong_id=%s, mail_address=%s, \
-            password=%s where employee_id=%s'
         employee_id = request.form['employee_id']
-        # TODO 同じアドレスとパスワードが使われていると変更できないようにする
+        sql = 'select employee_id from employee_tbl where mail_address=%s and password=%s'
+        row = select_one(sql, mail_address, password)
+        if row is None or row == employee_id:
+            if len(management) != 0:
+                management = management[0]
+                sql = 'update employee_tbl set name=%s, belong_id=%s, mail_address=%s, \
+                password=%s, management=%s where employee_id=%s'
+            else:
+                management = None
+                sql = 'update employee_tbl set name=%s, belong_id=%s, mail_address=%s, \
+                password=%s where employee_id=%s'
+        else:
+            return redirect(url_for('list'))
         change_tbl(sql, name, belong_id, mail_address, password, management, employee_id)
         return redirect(url_for('list'))
     else:
