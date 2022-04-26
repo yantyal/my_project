@@ -148,6 +148,9 @@ th,td{
     text-align: center;
     padding: 2px 5px;
 }
+th{
+    background-color: rgb(234, 225, 225);
+}
 .password-mask{
     text-align: left;
 }
