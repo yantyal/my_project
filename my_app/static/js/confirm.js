@@ -1,6 +1,6 @@
 function delete_check(){
     if(window.confirm('削除しますか？')){
-        window.alert('削除されました');
+        window.alert('削除を受けつけました');
         return true;
     }
     else{
@@ -11,7 +11,7 @@ function delete_check(){
 
 function add_check(){
     if(window.confirm('ユーザー登録しますか？')){
-        window.alert('登録されました');
+        window.alert('登録を受けつけました');
         return true;
     }
     else{
@@ -22,7 +22,7 @@ function add_check(){
 
 function edit_check(){
     if(window.confirm('登録情報を変更しますか？')){
-        window.alert('変更されました');
+        window.alert('変更を受けつけました');
         return true;
     }
     else{

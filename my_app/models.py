@@ -16,7 +16,7 @@ def select_one(sql, *args):
     conn = connect_db()
     cursor = conn.cursor()
     try:
-        cursor.execute(sql, [arg for arg in args if arg is not None ]) # なぜかlist(args)がエラーになる
+        cursor.execute(sql, [arg for arg in args if arg is not None ])
         row = cursor.fetchone()
     except(mysql.connector.errors.ProgrammingError) as e:
             print(e)
@@ -31,7 +31,7 @@ def select_all(sql, *args):
     conn = connect_db()
     cursor = conn.cursor()
     try:
-        cursor.execute(sql, [arg for arg in args if arg != '' and arg != '0']) # なぜかlist(args)がエラーになる
+        cursor.execute(sql, [arg for arg in args if arg != '' and arg != '0'])
         rows = cursor.fetchall()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)
@@ -40,14 +40,13 @@ def select_all(sql, *args):
         conn.close()
     return rows
 
-# insert文, delete文を実行するメソッド
-# update文はまだ試していない
+# insert文、delete文、update文を実行するメソッド
 def change_tbl(sql, *args):
     conn = connect_db()
     cursor = conn.cursor()
     print([arg for arg in args if arg is not None])
     try:
-        cursor.execute(sql, [arg for arg in args if arg is not None]) # なぜかlist(args)がエラーになる
+        cursor.execute(sql, [arg for arg in args if arg is not None])
         conn.commit()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)

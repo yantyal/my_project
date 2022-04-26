@@ -131,44 +131,59 @@ def add():
 
 @app.route('/user/edit/<employee_id>', methods=['GET', 'POST'])
 def edit(employee_id):
-    if 'name' in session:
-        sql = issue_sql('edit_user_info')
-        row = select_one(sql, employee_id)
-        table = issue_table('edit')
-        error_messages = []
-        user = {}
-        if row is not None:
-            for t, r in zip(table, row):
-                user[t] = r
-        return render_template('edit.html', error_messages=error_messages, user=user)
-    else:
+    if 'name' not in session:
         return redirect(url_for('login'))
+
+    end = time.time()
+    if 'start' in session:
+        # セッションに残すエラー文の生存時間は1秒
+        if end - session['start'] >= 1:
+            session.pop('errors', None)
+            session.pop('start', None)
+
+    sql = issue_sql('edit_user_info')
+    row = select_one(sql, employee_id)
+    table = issue_table('edit')
+    user = {}
+    if row is not None:
+        for t, r in zip(table, row):
+            user[t] = r
+    session['user'] = user
+    return render_template('edit.html')
 
 
 @app.route('/user/result', methods=['POST'])
 def edit_result():
-    if 'name' in session:
-        name = request.form['name']
-        belong_id = request.form['belong_id']
-        mail_address = request.form['mail_address']
-        password = request.form['password']
-        management = request.form.getlist('management')
-        employee_id = request.form['employee_id']
-        sql = issue_sql('edit_check')
-        row = select_one(sql, mail_address, password)
-        if row is None or row == employee_id:
-            if len(management) != 0:
-                management = management[0]
-                sql = issue_sql('edit', ["0"])
-            else:
-                management = None
-                sql = issue_sql('edit', ["1"])
-        else:
-            return redirect(url_for('list'))
-        change_tbl(sql, name, belong_id, mail_address, password, management, employee_id)
-        return redirect(url_for('list'))
-    else:
+    if 'name' not in session:
         return redirect(url_for('login'))
+
+    name = request.form['name']
+    belong_id = request.form['belong_id']
+    mail_address = request.form['mail_address']
+    password = request.form['password']
+    management = request.form.getlist('management')
+    employee_id = request.form['employee_id']
+    sql = issue_sql('edit_check')
+    row = select_one(sql, mail_address, password)
+    if row is not None:
+        row = str(row[0])
+
+    # メールアドレスとパスワードの重複登録は許さないが、
+    # 同一ユーザーなら許可(employee_idで検査)
+    if row is None or row == employee_id:
+        if len(management) != 0:
+            management = management[0]
+            sql = issue_sql('edit', ["0"])
+        else:
+            management = None
+            sql = issue_sql('edit', ["1"])
+        change_tbl(sql, name, belong_id, mail_address, password, management, employee_id)
+    else:
+        session['errors'] = create_error_messages('edit')
+        session['start'] = time.time()
+        return redirect(url_for('edit', employee_id=employee_id))
+
+    return redirect(url_for('list'))
 
 
 @app.route('/user/delete/<employee_id>', methods=['POST'])
