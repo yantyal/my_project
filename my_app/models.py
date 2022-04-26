@@ -1,4 +1,6 @@
 import mysql.connector, json
+from werkzeug.utils import secure_filename
+import os
 
 def connect_db():
     conn = mysql.connector.connect(
@@ -94,3 +96,18 @@ def create_error_messages(error_name):
     for index in errors[error_name]:
         messages.extend(errors[error_name][index])
     return messages
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
+def allwed_file(filename):
+    # .があるかどうかのチェックと、拡張子の確認
+    # OKなら１、だめなら0
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_file(file, filename, app_config_UPLOAD_FOLDER):
+    if file and allwed_file(filename):
+        # 危険な文字を削除（サニタイズ処理）
+        filename = secure_filename(filename)
+        # ファイルの保存
+        print(os.path.join(app_config_UPLOAD_FOLDER, filename))
+        file.save(os.path.join(app_config_UPLOAD_FOLDER, filename))
+    return filename

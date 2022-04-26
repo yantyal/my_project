@@ -2,10 +2,12 @@ from flask import Flask, render_template, redirect, url_for
 from flask import request, session
 from datetime import timedelta, datetime
 import time
-from my_app.models import create_error_messages, create_sql_condition, issue_table, select_one, select_all, change_tbl, issue_sql
+from my_app.models import create_error_messages, create_sql_condition, issue_table, save_file, select_one, select_all, change_tbl, issue_sql
 
 app = Flask(__name__)
 app.secret_key = 'abcdefghijklmn'
+UPLOAD_FOLDER = './my_app/static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.permanent_session_lifetime = timedelta(minutes=3) # セッションの生存時間は3分
 
 
@@ -109,6 +111,11 @@ def add():
         mail_address = request.form['mail_address']
         password = request.form['password']
         management = request.form.getlist('management')
+        if 'file' in request.files:
+            file = request.files['file']
+        print(file)
+        if file.filename != '':
+            filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
         if len(management) != 0:
             management = management[0]
         sql = issue_sql('login')
@@ -119,12 +126,18 @@ def add():
         session['start'] = time.time()
         return redirect(url_for('add'))
 
-    if management == 'Y':
+    if not filename and  management != 'Y':
         sql = issue_sql('add', ["0"])
-        change_tbl(sql, name, belong_id, mail_address, password, management)
-    else:
-        sql = issue_sql('add', ["1"])
         change_tbl(sql, name, belong_id, mail_address, password)
+    elif not filename and management == 'Y':
+        sql = issue_sql('add', ["1"])
+        change_tbl(sql, name, belong_id, mail_address, password, management)
+    elif filename and management != 'Y':
+        sql = issue_sql('add', ["2"])
+        change_tbl(sql, name, belong_id, mail_address, password, filename)
+    else:
+        sql = issue_sql('add', ["3"])
+        change_tbl(sql, name, belong_id, mail_address, password, filename, management)
 
     return redirect(url_for('list'))
 

@@ -26,8 +26,10 @@
 
     "add":
         {"0": "insert into employee_tbl(name, belong_id, mail_address, password",
-        "1": {"0": ", management) values(%s, %s, %s, %s, %s)",
-            "1": ") values(%s, %s, %s, %s)"}},
+        "1": {"0": ") values(%s, %s, %s, %s)",
+            "1": ", management) values(%s, %s, %s, %s, %s)",
+            "2": ",image_file_path) values(%s, %s, %s, %s, %s)",
+            "3": ",image_file_path, management) values(%s, %s, %s, %s, %s, %s)"}},
 
     "edit_user_info":
         {"0": "select e.employee_id, e.name, e.belong_id, e.mail_address, e.password,",
