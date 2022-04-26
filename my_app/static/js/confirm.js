@@ -30,3 +30,7 @@ function edit_check(){
         return false;
     }
 }
+
+function sort_clear(){
+    location.href = "./list";
+}
