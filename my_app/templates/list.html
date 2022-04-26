@@ -70,13 +70,6 @@
             </form>
         </div>
         <div class="list">
-            {% if error_messages %}
-                <div class="errors">
-                    {% for message in error_messages %}
-                        <div class="error"><p>{{ message }}</p></div>
-                    {% endfor %}
-                </div>
-            {% endif %}
             <div class="list-title"><i class="fas fa-angle-double-right"></i>社員一覧リスト</div>
             {% if session['management'] == 'Y' %}
                 <div class="add"><a href="/user/add"><i class="fas fa-plus"></i>新規登録</a></div>
@@ -92,8 +85,8 @@
                     <th>編集</th>
                     <th>削除</th>
                 </tr>
-                {% if users %}
-                    {% for user in users %}
+                {% if session['users'] %}
+                    {% for user in session['users'] %}
                         {% if user['management'] == 'Y' %}
                             <tr class="management-color">
                                 <td>{{ user['employee_id'] }}</td>
@@ -150,6 +143,13 @@
                     {% endfor %}
                 {% endif %}
             </table>
+            {% if session['errors'] %}
+                <div class="errors">
+                    {% for message in session['errors'] %}
+                        <div class="error"><p>{{ message }}</p></div>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="clear"></div>
         </div>
     </main>

@@ -6,7 +6,7 @@ from my_app.models import create_error_messages, create_sql_condition, issue_tab
 
 app = Flask(__name__)
 app.secret_key = 'abcdefghijklmn'
-app.permanent_session_lifetime = timedelta(minutes=3) # sessionの生存時間
+app.permanent_session_lifetime = timedelta(minutes=3) # セッションの生存時間は3分
 
 @app.route('/')
 def index():
@@ -14,70 +14,75 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'GET':
+        if 'name' in session:
+            return redirect(url_for('list'))
+        else:
+            end = time.time()
+            if 'start' in session:
+                # セッションに残すエラー文の生存時間は1秒
+                if end - session['start'] >= 1:
+                    session.clear()
+            return render_template('login.html')
+
     if request.method == 'POST':
         mail_address = request.form['mail_address']
         password = request.form['password']
         sql = issue_sql('login')
         row = select_one(sql, mail_address, password)
         table = issue_table('login')
-        error_messages = create_error_messages('login')
-        if row is not None:
-            for t, r in zip(table, row):
-                session[t] = r
-                if t == 'deleted_datetime' and r is not None:
-                    session.clear()
-                    session['errors'] = error_messages
-                    session['start'] = time.time()
-                    return redirect(url_for('login'))
-            return redirect(url_for('list'))
-        else:
-            #TODOトークンを利用する
-            session['errors'] = error_messages
-            session['start'] = time.time()
-            return redirect(url_for('login'))
+
+    # エラー発生時は1で、リダイレクト先を変える
+    redirect_number = 0
+    if row is not None:
+        for t, r in zip(table, row):
+            session[t] = r
+            if t == 'deleted_datetime' and r is not None:
+                redirect_number = 1
     else:
-        if 'name' in session:
-            return redirect(url_for('list'))
-        else:
-            end = time.time()
-            if 'start' in session:
-                # セッションに残すエラー文の生存時間は3秒
-                if end - session['start'] >= 3:
-                    session.clear()
-            return render_template('login.html')
+        redirect_number = 1
+
+    if redirect_number == 0:
+        return redirect(url_for('list'))
+    else:
+        session.clear()
+        session['errors'] = create_error_messages('login')
+        session['start'] = time.time()
+        return redirect(url_for('login'))
 
 @app.route('/user/list', methods=['GET','POST'])
 def list():
-    if 'name' in session:
-        sql = ''
-        if request.method == 'GET':
-            sql = issue_sql('list')
-            rows = select_all(sql)
-        else:
-            employee_id = request.form['employee_id']
-            name = request.form['name']
-            belong_id = request.form['belong_id']
-            sql_condition = create_sql_condition(employee_id, name, belong_id)
-            sql = issue_sql('sort', sql_condition)
-            rows = select_all(sql, employee_id, name, belong_id)
-        table = issue_table('list')
-        users = []
-        error_messages = []
-        if rows is not None:
-            if len(rows) == 0:
-                error_messages = create_error_messages('list')
-                return render_template('list.html', error_messages=error_messages, users=users)
-            for row in rows:
-                user = {}
-                for t, r in zip(table, row):
-                    user[t] = r
-                users.append(user)
-        else:
-            error_messages = create_error_messages('sort')
-            return render_template('list.html', error_messages=error_messages, users=users)
-        return render_template('list.html', error_messages=error_messages, users=users)
-    else:
+    session.pop('errors', None)
+    if 'name' not in session:
         return redirect(url_for('login'))
+
+    if request.method == 'GET':
+        sql = issue_sql('list')
+        rows = select_all(sql)
+    # POSTで受け取るのは社員の検索時
+    if request.method == 'POST':
+        employee_id = request.form['employee_id']
+        name = request.form['name']
+        belong_id = request.form['belong_id']
+        sql_condition = create_sql_condition(employee_id, name, belong_id)
+        sql = issue_sql('sort', sql_condition)
+        rows = select_all(sql, employee_id, name, belong_id)
+
+    if rows is None:
+        session['errors'] = create_error_messages('sort')
+    if len(rows) == 0:
+        session['errors'] = create_error_messages('list')
+
+    table = issue_table('list')
+    users = []
+    for row in rows:
+        user = {}
+        for t, r in zip(table, row):
+            user[t] = r
+        users.append(user)
+    session["users"] = users
+
+    return render_template('list.html')
 
 @app.route('/user/add', methods=['GET', 'POST'])
 def add():

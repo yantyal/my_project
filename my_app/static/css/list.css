@@ -64,6 +64,7 @@ header a{
 }
 .errors{
     text-align: center;
+    margin-top: 20px;
     margin-bottom: 15px;
 }
 .error p{
