@@ -68,12 +68,12 @@ def issue_sql(sql_name, dict_list=[]):
             sql += sqls[sql_name][index]
     return sql
 
-def create_dict_list(employee_id, name, belong_id):
-    dict_list = []
+def create_sql_condition(employee_id, name, belong_id):
+    sql_condition = []
     if employee_id:
-        dict_list.append("0")
+        sql_condition.append("0")
     if name:
-        dict_list.append("1")
+        sql_condition.append("1")
     if belong_id != '0':
-        dict_list.append("2")
-    return dict_list
+        sql_condition.append("2")
+    return sql_condition

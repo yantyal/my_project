@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for
 from flask import request, session
 from datetime import timedelta, datetime
 import time
-from my_app.models import create_dict_list, select_one, select_all, change_tbl, issue_sql
+from my_app.models import create_sql_condition, select_one, select_all, change_tbl, issue_sql
 
 app = Flask(__name__)
 app.secret_key = 'abcdefghijklmn'
@@ -58,8 +58,8 @@ def list():
             employee_id = request.form['employee_id']
             name = request.form['name']
             belong_id = request.form['belong_id']
-            dict_list = create_dict_list(employee_id, name, belong_id)
-            sql = issue_sql('sort', dict_list)
+            sql_condition = create_sql_condition(employee_id, name, belong_id)
+            sql = issue_sql('sort', sql_condition)
             rows = select_all(sql, employee_id, name, belong_id)
         tbl = ['employee_id', 'name', 'mail_address', 'password', 'management',
                 'deleted_datetime', 'image_file_path','belong_id', 'belong_name']
@@ -115,10 +115,7 @@ def add():
 @app.route('/user/edit/<employee_id>', methods=['GET', 'POST'])
 def edit(employee_id):
     if 'name' in session:
-        sql = "select e.employee_id, e.name, e.belong_id, e.mail_address, e.password, \
-            e.management, b.belong_name\
-            from employee_tbl as e inner join belong_master_tbl as b \
-            where e.belong_id = b.belong_id and employee_id=%s"
+        sql = issue_sql('edit_user_info')
         row = select_one(sql, employee_id)
         tbl = ['employee_id', 'name', 'belong_id', 'mail_address', 'password', 'management', 'belong_name']
         errors = []
@@ -139,17 +136,15 @@ def edit_result():
         password = request.form['password']
         management = request.form.getlist('management')
         employee_id = request.form['employee_id']
-        sql = 'select employee_id from employee_tbl where mail_address=%s and password=%s'
+        sql = issue_sql('edit_check')
         row = select_one(sql, mail_address, password)
         if row is None or row == employee_id:
             if len(management) != 0:
                 management = management[0]
-                sql = 'update employee_tbl set name=%s, belong_id=%s, mail_address=%s, \
-                password=%s, management=%s where employee_id=%s'
+                sql = issue_sql('edit', ["0"])
             else:
                 management = None
-                sql = 'update employee_tbl set name=%s, belong_id=%s, mail_address=%s, \
-                password=%s where employee_id=%s'
+                sql = issue_sql('edit', ["1"])
         else:
             return redirect(url_for('list'))
         change_tbl(sql, name, belong_id, mail_address, password, management, employee_id)
@@ -160,7 +155,7 @@ def edit_result():
 @app.route('/user/delete/<employee_id>', methods=['POST'])
 def delete(employee_id):
     deleted_datetime = datetime.now().strftime('%Y-%m-%d')
-    sql = 'update employee_tbl set deleted_datetime=%s where employee_id=%s'
+    sql = issue_sql('delete')
     change_tbl(sql, deleted_datetime, employee_id)
     return redirect(url_for('list'))
 
