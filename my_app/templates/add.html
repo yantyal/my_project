@@ -27,9 +27,9 @@
         <form action="/user/add" method="POST" onSubmit="return add_check()">
             <h1>新規登録</h1>
             <div class="errors">
-                {% if errors %}
-                    {% for error in errors %}
-                        <div class="error"><p>{{ error }}</p></div>
+                {% if error_messages %}
+                    {% for message in error_messages %}
+                        <div class="error"><p>{{ message }}</p></div>
                     {% endfor %}
                 {% endif %}
             </div>

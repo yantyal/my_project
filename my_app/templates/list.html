@@ -70,10 +70,10 @@
             </form>
         </div>
         <div class="list">
-            {% if errors %}
+            {% if error_messages %}
                 <div class="errors">
-                    {% for error in errors %}
-                        <div class="error"><p>{{ error }}</p></div>
+                    {% for message in error_messages %}
+                        <div class="error"><p>{{ message }}</p></div>
                     {% endfor %}
                 </div>
             {% endif %}

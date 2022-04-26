@@ -77,3 +77,21 @@ def create_sql_condition(employee_id, name, belong_id):
     if belong_id != '0':
         sql_condition.append("2")
     return sql_condition
+
+# SQL文を保存するためのtable
+def issue_table(table_name):
+    with open('table.json', 'r') as file:
+        tables = json.load(file)
+    table = []
+    for index in tables[table_name]:
+        table.extend(tables[table_name][index])
+    return table
+
+# エラーメッセージを配列で返すメソッド
+def create_error_messages(error_name):
+    with open('errors.json', 'r', encoding='utf-8') as file:
+        errors = json.load(file)
+    messages = []
+    for index in errors[error_name]:
+        messages.extend(errors[error_name][index])
+    return messages

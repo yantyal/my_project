@@ -27,9 +27,9 @@
         <form action="/user/result" method="POST" onSubmit="return edit_check()">
             <h1>ユーザー情報を変更できます</h1>
             <div class="errors">
-                {% if errors %}
-                    {% for error in errors %}
-                        <div class="error"><p>{{ error }}</p></div>
+                {% if error_messages %}
+                    {% for message in error_messages %}
+                        <div class="error"><p>{{ message }}</p></div>
                     {% endfor %}
                 {% endif %}
             </div>

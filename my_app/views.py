@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for
 from flask import request, session
 from datetime import timedelta, datetime
 import time
-from my_app.models import create_sql_condition, select_one, select_all, change_tbl, issue_sql
+from my_app.models import create_error_messages, create_sql_condition, issue_table, select_one, select_all, change_tbl, issue_sql
 
 app = Flask(__name__)
 app.secret_key = 'abcdefghijklmn'
@@ -19,21 +19,20 @@ def login():
         password = request.form['password']
         sql = issue_sql('login')
         row = select_one(sql, mail_address, password)
-        tbl = ['employee_id', 'name', 'deleted_datetime', 'management']
-        errors = ['ログインに失敗しました。',
-                'メールアドレスとパスワードをご確認ください。']
+        table = issue_table('login')
+        error_messages = create_error_messages('login')
         if row is not None:
-            for t, r in zip(tbl, row):
+            for t, r in zip(table, row):
                 session[t] = r
                 if t == 'deleted_datetime' and r is not None:
                     session.clear()
-                    session['errors'] = errors
+                    session['errors'] = error_messages
                     session['start'] = time.time()
                     return redirect(url_for('login'))
             return redirect(url_for('list'))
         else:
             #TODOトークンを利用する
-            session['errors'] = errors
+            session['errors'] = error_messages
             session['start'] = time.time()
             return redirect(url_for('login'))
     else:
@@ -61,23 +60,22 @@ def list():
             sql_condition = create_sql_condition(employee_id, name, belong_id)
             sql = issue_sql('sort', sql_condition)
             rows = select_all(sql, employee_id, name, belong_id)
-        tbl = ['employee_id', 'name', 'mail_address', 'password', 'management',
-                'deleted_datetime', 'image_file_path','belong_id', 'belong_name']
+        table = issue_table('list')
         users = []
-        errors = []
+        error_messages = []
         if rows is not None:
             if len(rows) == 0:
-                errors = ['リストに存在しません']
-                return render_template('list.html', errors=errors, users=users)
+                error_messages = create_error_messages('list')
+                return render_template('list.html', error_messages=error_messages, users=users)
             for row in rows:
                 user = {}
-                for t, r in zip(tbl, row):
+                for t, r in zip(table, row):
                     user[t] = r
                 users.append(user)
         else:
-            errors = ['リストの取得に失敗しました。']
-            return render_template('list.html', errors=errors, users=users)
-        return render_template('list.html', errors=errors, users=users)
+            error_messages = create_error_messages('sort')
+            return render_template('list.html', error_messages=error_messages, users=users)
+        return render_template('list.html', error_messages=error_messages, users=users)
     else:
         return redirect(url_for('login'))
 
@@ -102,13 +100,12 @@ def add():
                     sql = issue_sql('add', ["1"])
                     change_tbl(sql, name, belong_id, mail_address, password)
             else:
-                errors = ['登録できないメールアドレスと',
-                        'パスワードです']
-                return render_template('add.html', errors=errors)
+                error_messages = create_error_messages('add')
+                return render_template('add.html', error_messages=error_messages)
             return redirect(url_for('list'))
         else:
-            errors = []
-            return render_template('add.html',errors=errors)
+            error_messages = []
+            return render_template('add.html', error_messages=error_messages)
     else:
         return redirect(url_for('login'))
 
@@ -117,13 +114,13 @@ def edit(employee_id):
     if 'name' in session:
         sql = issue_sql('edit_user_info')
         row = select_one(sql, employee_id)
-        tbl = ['employee_id', 'name', 'belong_id', 'mail_address', 'password', 'management', 'belong_name']
-        errors = []
+        table = issue_table('edit')
+        error_messages = []
         user = {}
         if row is not None:
-            for t, r in zip(tbl, row):
+            for t, r in zip(table, row):
                 user[t] = r
-        return render_template('edit.html', errors=errors, user=user)
+        return render_template('edit.html', error_messages=error_messages, user=user)
     else:
         return redirect(url_for('login'))
 
