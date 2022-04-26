@@ -61,6 +61,7 @@
                 <input type="checkbox" name="management" value="Y">
             </div>
             <input type="hidden" name="employee_id" value="{{ session['user']['employee_id'] }}">
+            <img src="{{ session['user']['employee_id'] }}">
             <input class="form-submit" type="submit" value="更新">
         </form>
         <a class="back" href="{{ url_for('list') }}">社員一覧リストへ</a>

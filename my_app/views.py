@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for
 from flask import request, session
 from datetime import timedelta, datetime
-import time
+import time, os
 from my_app.models import create_error_messages, create_sql_condition, issue_table, save_file, select_one, select_all, change_tbl, issue_sql
 
 app = Flask(__name__)
@@ -160,7 +160,11 @@ def edit(employee_id):
     user = {}
     if row is not None:
         for t, r in zip(table, row):
-            user[t] = r
+            if t == 'image_file_path':
+                print(os.path.join("static/uploads", r))
+                user[t] = os.path.join("static/uploads", r)
+            else:
+                user[t] = r
     session['user'] = user
     return render_template('edit.html')
 

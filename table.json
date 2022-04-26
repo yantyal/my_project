@@ -7,5 +7,5 @@
 
     "edit":
         {"0":  ["employee_id", "name", "belong_id", "mail_address", "password"],
-        "1": ["management", "belong_name"]}
+        "1": ["management", "image_file_path", "belong_name"]}
 }

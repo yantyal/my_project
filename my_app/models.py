@@ -108,6 +108,5 @@ def save_file(file, filename, app_config_UPLOAD_FOLDER):
         # 危険な文字を削除（サニタイズ処理）
         filename = secure_filename(filename)
         # ファイルの保存
-        print(os.path.join(app_config_UPLOAD_FOLDER, filename))
         file.save(os.path.join(app_config_UPLOAD_FOLDER, filename))
     return filename
