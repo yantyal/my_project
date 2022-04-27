@@ -1,0 +1,11 @@
+{   "login":
+        {"0": ["employee_id", "name", "deleted_datetime", "management"]},
+
+    "list":
+        {"0": ["employee_id", "name", "mail_address", "password", "management"],
+        "1": ["deleted_datetime", "image_file_path","belong_id", "belong_name"]},
+
+    "edit":
+        {"0":  ["employee_id", "name", "belong_id", "mail_address", "password"],
+        "1": ["management", "image_file_path", "belong_name"]}
+}

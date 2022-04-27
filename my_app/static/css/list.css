@@ -64,6 +64,7 @@ header a{
 }
 .errors{
     text-align: center;
+    margin-top: 20px;
     margin-bottom: 15px;
 }
 .error p{
@@ -147,6 +148,9 @@ th,td{
     border: solid 1px;
     text-align: center;
     padding: 2px 5px;
+}
+th{
+    background-color: rgb(234, 225, 225);
 }
 .password-mask{
     text-align: left;

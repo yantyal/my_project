@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
+    <script src="{{url_for('static', filename = 'js/confirm.js')}}"></script>
     <title>ユーザー管理システム</title>
 </head>
 <body>
@@ -23,20 +24,21 @@
         </div>
     </header>
     <div class="form-wrapper">
-        <form action="/user/add" method="POST">
-            <h1>新規登録</h1>
+        <form action="/user/result" method="POST" onSubmit="return edit_check()" enctype="multipart/form-data">
+            <h1>ユーザー情報を変更できます</h1>
             <div class="errors">
-                {% if errors %}
-                    {% for error in errors %}
-                        <div class="error"><p>{{ error }}</p></div>
+                {% if session['errors'] %}
+                    {% for message in session['errors'] %}
+                        <div class="error"><p>{{ message }}</p></div>
                     {% endfor %}
                 {% endif %}
             </div>
             <p>名前を入力してください</p>
-            <input class="form-item" type="text" name="name" required>
+            <input class="form-item" type="text" name="name" value="{{ session['user']['name'] }}"required>
             <p>所属を選択してください</p>
             <div class="sort-item">
                 <select name="belong_id">
+                    <option value="{{ session['user']['belong_id'] }}">{{ session['user']['belong_name'] }}</option>
                     <option value="0">不明</option>
                     <option value="1">総務課</option>
                     <option value="2">BS事業部</option>
@@ -50,16 +52,24 @@
                 </select>
             </div>
             <p>メールアドレスを入力してください</p>
-            <input class="form-item" type="text" name="mail_address" required>
+            <input class="form-item" type="text" name="mail_address" value="{{ session['user']['mail_address'] }}"required>
             <p>パスワードを入力してください</p>
-            <input class="form-item" type="password" name="password" required>
+            <input class="form-item" type="password" name="password" value="{{ session['user']['password'] }}" required>
             <p>管理者権限を付与する場合はチェックしてください</p>
             <div class="management-checkbox">
                 <label for="management">管理者権限</label>
-                <input type="checkbox" name="management" value="Y">
+                {% if session['user']['management'] == 'Y' %}
+                    <input type="checkbox" name="management" value="Y" checked>
+                {% else %}
+                    <input type="checkbox" name="management" value="Y">
+                {% endif %}
             </div>
-            <input class="form-submit" type="submit" value="新規登録">
+            <input type="hidden" name="employee_id" value="{{ session['user']['employee_id'] }}">
+            <p><img src="{{ session['user']['image_file_path'] }}" alt="画像未登録"></p>
+            <p><input type="file" name="file"></p>
+            <input class="form-submit" type="submit" value="更新">
         </form>
+        <a class="back" href="{{ url_for('list') }}">社員一覧リストへ</a>
     </div>
     <script src="https://kit.fontawesome.com/75eed8fdb7.js" crossorigin="anonymous"></script>
 </body>

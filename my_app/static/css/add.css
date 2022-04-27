@@ -51,7 +51,7 @@ header a{
     background-color: rgb(255, 255, 255);
     width: 400px;
     padding-top: 30px;
-    padding-bottom: 50px;
+    padding-bottom: 40px;
     margin: 0 auto;
     margin-top: 80px;
     text-align: center;
@@ -112,4 +112,20 @@ select{
 .management-checkbox label{
     font-size: 16px;
     color: #403e3e;
+}
+.back{
+    display: inline-block;
+    margin-top: 40px;
+    color: #b1b0b0;
+    font-size: 12px;
+    text-decoration: none;
+}
+.back:hover{
+    border-bottom:1px dotted #b1b0b0;
+}
+
+img{
+    margin-top: 10px;
+    vertical-align: bottom;
+    width: 128px;
 }

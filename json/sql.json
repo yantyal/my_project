@@ -1,0 +1,52 @@
+{
+    "login":
+        {"0": "select employee_id, name, deleted_datetime, management from employee_tbl",
+        "1": " where mail_address=%s and password=%s"},
+
+    "list":
+        {"0": "select e.employee_id, e.name, e.mail_address, e.password,",
+        "1": " coalesce(e.management, ''), coalesce(e.deleted_datetime, ''),",
+        "2": " coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name",
+        "3": " from employee_tbl as e inner join belong_master_tbl as b",
+        "4": " where e.belong_id = b.belong_id",
+        "5": " and e.deleted_datetime is null",
+        "6": " order by management desc, employee_id"},
+
+    "sort":
+        {"0": "select e.employee_id, e.name, e.mail_address, e.password,",
+        "1": " coalesce(e.management, ''), coalesce(e.deleted_datetime, ''),",
+        "2": " coalesce(e.image_file_path, ''), coalesce(e.belong_id, ''), b.belong_name",
+        "3": " from employee_tbl as e inner join belong_master_tbl as b",
+        "4": " where e.belong_id = b.belong_id",
+        "5": " and e.deleted_datetime is null",
+        "6": {"0": " and e.employee_id=%s",
+            "1": " and e.name like %s",
+            "2": " and e.belong_id=%s"},
+        "7": " order by management desc, employee_id"},
+
+    "add":
+        {"0": "insert into employee_tbl(name, belong_id, mail_address, password",
+        "1": {"0": ") values(%s, %s, %s, %s)",
+            "1": ", management) values(%s, %s, %s, %s, %s)",
+            "2": ",image_file_path) values(%s, %s, %s, %s, %s)",
+            "3": ",image_file_path, management) values(%s, %s, %s, %s, %s, %s)"}},
+
+    "edit_user_info":
+        {"0": "select e.employee_id, e.name, e.belong_id, e.mail_address, e.password,",
+        "1": " e.management, coalesce(e.image_file_path, ''), b.belong_name",
+        "2": " from employee_tbl as e inner join belong_master_tbl as b",
+        "3": " where e.belong_id = b.belong_id and employee_id=%s"},
+
+    "edit_check":
+        {"0": "select employee_id from employee_tbl where mail_address=%s and password=%s"},
+
+    "edit":
+        {"0": "update employee_tbl set name=%s, belong_id=%s, mail_address=%s,",
+        "1": {"0": " password=%s, management=NULL where employee_id=%s",
+            "1": " password=%s, management=%s where employee_id=%s",
+            "2": "password=%s, image_file_path=%s, management=NULL where employee_id=%s",
+            "3": "password=%s, image_file_path=%s, management=%s where employee_id=%s"}},
+
+    "delete":
+        {"0": "update employee_tbl set deleted_datetime=%s where employee_id=%s"}
+}

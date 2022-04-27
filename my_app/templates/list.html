@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
+    <script src="{{url_for('static', filename = 'js/confirm.js')}}"></script>
     <title>ユーザー管理システム</title>
 </head>
 
@@ -34,7 +35,7 @@
                 <div class="sort">
                     <div class="sort-item">
                         <div>社員ID</div>
-                        <input class="form-item" type="text" name="emp_id">
+                        <input class="form-item" type="text" name="employee_id">
                     </div>
                     <div class="sort-item">
                         <div>名前</div>
@@ -58,7 +59,7 @@
                 </div>
                 <div class="submit">
                     <div class="submit-item">
-                        <input class="form-submit" type="button" value="クリア">
+                        <input class="form-submit" type="button" onclick="sort_clear()" value="クリア">
                     </div>
                     <div class="submit-item">
                         <button class="form-submit" type="submit">
@@ -69,15 +70,10 @@
             </form>
         </div>
         <div class="list">
-            {% if errors %}
-                <div class="errors">
-                    {% for error in errors %}
-                        <div class="error"><p>{{ error }}</p></div>
-                    {% endfor %}
-                </div>
-            {% endif %}
             <div class="list-title"><i class="fas fa-angle-double-right"></i>社員一覧リスト</div>
-            <div class="add"><a href="/user/add"><i class="fas fa-plus"></i>新規登録</a></div>
+            {% if session['management'] == 'Y' %}
+                <div class="add"><a href="/user/add"><i class="fas fa-plus"></i>新規登録</a></div>
+            {% endif %}
             <table>
                 <tr>
                     <th>社員ID</th>
@@ -89,8 +85,8 @@
                     <th>編集</th>
                     <th>削除</th>
                 </tr>
-                {% if users %}
-                    {% for user in users %}
+                {% if session['users'] %}
+                    {% for user in session['users'] %}
                         {% if user['management'] == 'Y' %}
                             <tr class="management-color">
                                 <td>{{ user['employee_id'] }}</td>
@@ -111,11 +107,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form action="/user/delete/{{user['employee_id']}}" method="POST">
-                                        <button type="submit" class="button-item">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    <!-- 表示しない -->
                                 </td>
                             </tr>
                         {% else %}
@@ -138,17 +130,26 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form action="/user/delete/{{user['employee_id']}}" method="POST">
-                                        <button type="submit" class="button-item">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    {% if user['employee_id'] != session['employee_id'] %}
+                                        <form action="/user/delete/{{user['employee_id']}}" method="POST" onSubmit="return delete_check()">
+                                            <button type="submit" class="button-item">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
             </table>
+            {% if session['errors'] %}
+                <div class="errors">
+                    {% for message in session['errors'] %}
+                        <div class="error"><p>{{ message }}</p></div>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="clear"></div>
         </div>
     </main>

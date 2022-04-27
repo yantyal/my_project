@@ -17,8 +17,8 @@
             <h1>ユーザー管理システム</h1>
             <div class="errors">
                 {% if session['errors'] %}
-                    {% for error in session['errors'] %}
-                        <div class="error"><p>{{ error }}</p></div>
+                    {% for message in session['errors'] %}
+                        <div class="error"><p>{{ message }}</p></div>
                     {% endfor %}
                 {% endif %}
             </div>
