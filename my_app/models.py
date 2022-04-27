@@ -2,7 +2,7 @@ from flask import Flask
 import mysql.connector, json
 from datetime import timedelta
 from werkzeug.utils import secure_filename
-import os
+import os, hashlib
 
 
 def create_app():
@@ -120,3 +120,6 @@ def save_file(file, filename, app_config_UPLOAD_FOLDER):
         # ファイルの保存
         file.save(os.path.join(app_config_UPLOAD_FOLDER, filename))
     return filename
+
+def create_hash(password):
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
