@@ -1,13 +1,14 @@
 from flask import Flask, render_template, redirect, url_for
 from flask import request, session
 from datetime import timedelta, datetime
-import time, os
+import time
 from my_app.models import create_error_messages, create_sql_condition, issue_table, save_file, select_one, select_all, change_tbl, issue_sql
 
+
 app = Flask(__name__, static_folder="static")
-app.secret_key = 'abcdefghijklmn'
-UPLOAD_FOLDER = './my_app/static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config.from_envvar('APPLICATION_SETTINGS')
+# UPLOAD_FOLDER = './my_app/static/uploads'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.permanent_session_lifetime = timedelta(minutes=3) # セッションの生存時間は3分
 
 
@@ -113,6 +114,9 @@ def add():
         management = request.form.getlist('management')
         if len(management) != 0:
             management = management[0]
+        else:
+            management = None
+        filename = None
         if 'file' in request.files:
             file = request.files['file']
         if file.filename != '':
@@ -127,16 +131,16 @@ def add():
 
     if not filename and  management != 'Y':
         sql = issue_sql('add', ["0"])
-        change_tbl(sql, name, belong_id, mail_address, password)
+        # change_tbl(sql, name, belong_id, mail_address, password)
     elif not filename and management == 'Y':
         sql = issue_sql('add', ["1"])
-        change_tbl(sql, name, belong_id, mail_address, password, management)
+        # change_tbl(sql, name, belong_id, mail_address, password, management)
     elif filename and management != 'Y':
         sql = issue_sql('add', ["2"])
-        change_tbl(sql, name, belong_id, mail_address, password, filename)
+        #change_tbl(sql, name, belong_id, mail_address, password, filename)
     else:
         sql = issue_sql('add', ["3"])
-        change_tbl(sql, name, belong_id, mail_address, password, filename, management)
+    change_tbl(sql, name, belong_id, mail_address, password, filename, management)
 
     return redirect(url_for('list'))
 
@@ -179,6 +183,8 @@ def edit_result():
     management = request.form.getlist('management')
     if len(management) != 0:
         management = management[0]
+    else:
+        management = None
     filename = None
     if 'file' in request.files:
         file = request.files['file']
@@ -199,16 +205,14 @@ def edit_result():
 
     if not filename and  management != 'Y':
         sql = issue_sql('edit', ["0"])
-        change_tbl(sql, name, belong_id, mail_address, password, employee_id)
     elif not filename and management == 'Y':
         sql = issue_sql('edit', ["1"])
-        change_tbl(sql, name, belong_id, mail_address, password, management, employee_id)
     elif filename and management != 'Y':
         sql = issue_sql('edit', ["2"])
-        change_tbl(sql, name, belong_id, mail_address, password, filename, employee_id)
     else:
         sql = issue_sql('edit', ["3"])
-        change_tbl(sql, name, belong_id, mail_address, password, filename, management, employee_id)
+
+    change_tbl(sql, name, belong_id, mail_address, password, filename, management, employee_id)
 
     return redirect(url_for('list'))
 
