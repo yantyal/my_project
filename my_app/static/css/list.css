@@ -75,7 +75,7 @@ header a{
     font-size: 1em;
     border: none;
     border-bottom: 2px solid #e9e9e9;
-    height: 30px;  
+    height: 30px;
     width: 100px;
     margin-bottom: 0.75em;
 }
@@ -151,6 +151,10 @@ th,td{
 }
 th{
     background-color: rgb(234, 225, 225);
+}
+.password{
+    max-width: 200px;
+    word-break: break-word;
 }
 .password-mask{
     text-align: left;

@@ -94,7 +94,7 @@
                                 <td>{{ user['belong_name'] }}</td>
                                 <td>{{ user['mail_address'] }}</td>
                                 {% if session['management'] == 'Y' %}
-                                    <td>{{ user['password'] }}</td>
+                                    <td class="password">{{ user['password'] }}</td>
                                 {% else %}
                                     <td class="password-mask">●●●</td>
                                 {% endif %}
@@ -117,7 +117,7 @@
                                 <td>{{ user['belong_name'] }}</td>
                                 <td>{{ user['mail_address'] }}</td>
                                 {% if session['management'] == 'Y' %}
-                                    <td>{{ user['password'] }}</td>
+                                    <td  class="password">{{ user['password'] }}</td>
                                 {% else %}
                                     <td class="password-mask">●●●</td>
                                 {% endif %}
