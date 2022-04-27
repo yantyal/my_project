@@ -123,3 +123,9 @@ select{
 .back:hover{
     border-bottom:1px dotted #b1b0b0;
 }
+
+img{
+    margin-top: 10px;
+    vertical-align: bottom;
+    width: 128px;
+}

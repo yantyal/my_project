@@ -33,7 +33,7 @@
 
     "edit_user_info":
         {"0": "select e.employee_id, e.name, e.belong_id, e.mail_address, e.password,",
-        "1": " e.management, e.image_file_path, b.belong_name",
+        "1": " e.management, coalesce(e.image_file_path, ''), b.belong_name",
         "2": " from employee_tbl as e inner join belong_master_tbl as b",
         "3": " where e.belong_id = b.belong_id and employee_id=%s"},
 
@@ -42,8 +42,10 @@
 
     "edit":
         {"0": "update employee_tbl set name=%s, belong_id=%s, mail_address=%s,",
-        "1": {"0": " password=%s, management=%s where employee_id=%s",
-            "1": " password=%s where employee_id=%s"}},
+        "1": {"0": " password=%s, management=NULL where employee_id=%s",
+            "1": " password=%s, management=%s where employee_id=%s",
+            "2": "password=%s, image_file_path=%s, management=NULL where employee_id=%s",
+            "3": "password=%s, image_file_path=%s, management=%s where employee_id=%s"}},
 
     "delete":
         {"0": "update employee_tbl set deleted_datetime=%s where employee_id=%s"}

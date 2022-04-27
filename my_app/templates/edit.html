@@ -24,7 +24,7 @@
         </div>
     </header>
     <div class="form-wrapper">
-        <form action="/user/result" method="POST" onSubmit="return edit_check()">
+        <form action="/user/result" method="POST" onSubmit="return edit_check()" enctype="multipart/form-data">
             <h1>ユーザー情報を変更できます</h1>
             <div class="errors">
                 {% if session['errors'] %}
@@ -58,10 +58,15 @@
             <p>管理者権限を付与する場合はチェックしてください</p>
             <div class="management-checkbox">
                 <label for="management">管理者権限</label>
-                <input type="checkbox" name="management" value="Y">
+                {% if session['user']['management'] == 'Y' %}
+                    <input type="checkbox" name="management" value="Y" checked>
+                {% else %}
+                    <input type="checkbox" name="management" value="Y">
+                {% endif %}
             </div>
             <input type="hidden" name="employee_id" value="{{ session['user']['employee_id'] }}">
-            <img src="{{ session['user']['employee_id'] }}">
+            <p><img src="{{ session['user']['image_file_path'] }}" alt="画像未登録"></p>
+            <p><input type="file" name="file"></p>
             <input class="form-submit" type="submit" value="更新">
         </form>
         <a class="back" href="{{ url_for('list') }}">社員一覧リストへ</a>

@@ -97,7 +97,7 @@ def create_error_messages(error_name):
         messages.extend(errors[error_name][index])
     return messages
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif','jpeg'])
 def allwed_file(filename):
     # .があるかどうかのチェックと、拡張子の確認
     # OKなら１、だめなら0

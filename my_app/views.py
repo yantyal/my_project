@@ -4,7 +4,7 @@ from datetime import timedelta, datetime
 import time, os
 from my_app.models import create_error_messages, create_sql_condition, issue_table, save_file, select_one, select_all, change_tbl, issue_sql
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 app.secret_key = 'abcdefghijklmn'
 UPLOAD_FOLDER = './my_app/static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -111,13 +111,12 @@ def add():
         mail_address = request.form['mail_address']
         password = request.form['password']
         management = request.form.getlist('management')
-        if 'file' in request.files:
-            file = request.files['file']
-        print(file)
-        if file.filename != '':
-            filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
         if len(management) != 0:
             management = management[0]
+        if 'file' in request.files:
+            file = request.files['file']
+        if file.filename != '':
+            filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
         sql = issue_sql('login')
         row = select_one(sql, mail_address, password)
 
@@ -161,8 +160,7 @@ def edit(employee_id):
     if row is not None:
         for t, r in zip(table, row):
             if t == 'image_file_path':
-                print(os.path.join("static/uploads", r))
-                user[t] = os.path.join("static/uploads", r)
+                user[t] = "/static/uploads/" + r
             else:
                 user[t] = r
     session['user'] = user
@@ -179,6 +177,13 @@ def edit_result():
     mail_address = request.form['mail_address']
     password = request.form['password']
     management = request.form.getlist('management')
+    if len(management) != 0:
+        management = management[0]
+    filename = None
+    if 'file' in request.files:
+        file = request.files['file']
+    if file.filename != '':
+        filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
     employee_id = request.form['employee_id']
     sql = issue_sql('edit_check')
     row = select_one(sql, mail_address, password)
@@ -187,18 +192,23 @@ def edit_result():
 
     # メールアドレスとパスワードの重複登録は許さないが、
     # 同一ユーザーなら許可(employee_idで検査)
-    if row is None or row == employee_id:
-        if len(management) != 0:
-            management = management[0]
-            sql = issue_sql('edit', ["0"])
-        else:
-            management = None
-            sql = issue_sql('edit', ["1"])
-        change_tbl(sql, name, belong_id, mail_address, password, management, employee_id)
-    else:
+    if row is not None and row != employee_id:
         session['errors'] = create_error_messages('edit')
         session['start'] = time.time()
         return redirect(url_for('edit', employee_id=employee_id))
+
+    if not filename and  management != 'Y':
+        sql = issue_sql('edit', ["0"])
+        change_tbl(sql, name, belong_id, mail_address, password, employee_id)
+    elif not filename and management == 'Y':
+        sql = issue_sql('edit', ["1"])
+        change_tbl(sql, name, belong_id, mail_address, password, management, employee_id)
+    elif filename and management != 'Y':
+        sql = issue_sql('edit', ["2"])
+        change_tbl(sql, name, belong_id, mail_address, password, filename, employee_id)
+    else:
+        sql = issue_sql('edit', ["3"])
+        change_tbl(sql, name, belong_id, mail_address, password, filename, management, employee_id)
 
     return redirect(url_for('list'))
 
