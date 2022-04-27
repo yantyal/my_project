@@ -1,6 +1,16 @@
+from flask import Flask
 import mysql.connector, json
+from datetime import timedelta
 from werkzeug.utils import secure_filename
 import os
+
+
+def create_app():
+    app = Flask(__name__, static_folder="static")
+    app.config.from_envvar('APPLICATION_SETTINGS')
+    app.permanent_session_lifetime = timedelta(minutes=3) # セッションの生存時間は3分
+    return app
+
 
 def connect_db():
     conn = mysql.connector.connect(

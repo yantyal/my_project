@@ -1,16 +1,11 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import render_template, redirect, url_for
 from flask import request, session
-from datetime import timedelta, datetime
+from datetime import datetime
 import time
-from my_app.models import create_error_messages, create_sql_condition, issue_table, save_file, select_one, select_all, change_tbl, issue_sql
+from my_app.models import create_app, create_error_messages, create_sql_condition, issue_table, save_file, select_one, select_all, change_tbl, issue_sql
 
 
-app = Flask(__name__, static_folder="static")
-app.config.from_envvar('APPLICATION_SETTINGS')
-# UPLOAD_FOLDER = './my_app/static/uploads'
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.permanent_session_lifetime = timedelta(minutes=3) # セッションの生存時間は3分
-
+app = create_app()
 
 @app.route('/')
 def index():
