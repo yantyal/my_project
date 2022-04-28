@@ -111,7 +111,7 @@ def add():
             file = request.files['file']
         if file.filename != '':
             filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
-        sql = issue_sql('login')
+        sql = issue_sql('add_check')
         row = select_one(sql, mail_address, password)
 
     if row is not None:
