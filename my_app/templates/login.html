@@ -25,9 +25,12 @@
             <p>メールアドレスを入力してください</p>
             <input class="form-item" type="text" name="mail_address" required>
             <p>パスワードを入力してください</p>
-            <input class="form-item" type="password" name="password" required>
+            <input id="login" class="form-item" type="password" name="password" required>
+            # TODO buttonの位置を変更
+            <span id="btn_login" class="fa fa-eye" onclick="password_mask()"></span>
             <input class="form-submit" type="submit" value="送信">
         </form>
     </div>
 </body>
+<script src="{{url_for('static', filename = 'js/script.js')}}"></script>
 </html>
