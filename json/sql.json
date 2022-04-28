@@ -24,6 +24,11 @@
             "2": " and e.belong_id=%s"},
         "7": " order by management desc, employee_id"},
 
+    "add_check":
+        {"0": "select employee_id, name, deleted_datetime, management from employee_tbl",
+        "1": " where mail_address=%s and password=%s",
+        "2": " and deleted_datetime is NULL"},
+
     "add":
         {"0": "insert into employee_tbl(name, belong_id, mail_address, password",
         "1": {"0": ") values(%s, %s, %s, %s)",
@@ -38,7 +43,8 @@
         "3": " where e.belong_id = b.belong_id and employee_id=%s"},
 
     "edit_check":
-        {"0": "select employee_id from employee_tbl where mail_address=%s and password=%s"},
+        {"0": "select employee_id from employee_tbl where mail_address=%s and password=%s",
+        "1": " and deleted_datetime is NULL"},
 
     "edit":
         {"0": "update employee_tbl set name=%s, belong_id=%s, mail_address=%s,",

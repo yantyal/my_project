@@ -111,7 +111,7 @@ def add():
             file = request.files['file']
         if file.filename != '':
             filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
-        sql = issue_sql('login')
+        sql = issue_sql('add_check')
         row = select_one(sql, mail_address, password)
 
     if row is not None:
@@ -150,7 +150,10 @@ def edit(employee_id):
             else:
                 user[t] = r
     session['user'] = user
-    return render_template('edit.html')
+
+    if request.method == 'GET':
+        return render_template('edit.html')
+    return redirect(url_for('edit', employee_id=employee_id))
 
 
 @app.route('/user/result', methods=['POST'])
