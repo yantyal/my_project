@@ -108,13 +108,13 @@ def create_error_messages(error_name):
     return messages
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif','jpeg'])
-def allwed_file(filename):
+def allowed_file(filename):
     # .があるかどうかのチェックと、拡張子の確認
     # OKなら１、だめなら0
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def save_file(file, filename, app_config_UPLOAD_FOLDER):
-    if file and allwed_file(filename):
+    if file and allowed_file(filename):
         # 危険な文字を削除（サニタイズ処理）
         filename = secure_filename(filename)
         # ファイルの保存

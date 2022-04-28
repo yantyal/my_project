@@ -187,7 +187,7 @@ def edit_result():
     sql = issue_sql('edit_check')
     row = select_one(sql, mail_address, password)
     if row is not None:
-        row = str(row[0])
+        row = str(row[0]) # employee_idを取り出している
 
     # メールアドレスとパスワードの重複登録は許さないが、
     # 同一ユーザーなら許可(employee_idで検査)
