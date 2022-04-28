@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for
 from flask import request, session
 from datetime import datetime
 import time
-from my_app.models import (create_app, create_error_messages, create_sql_condition,
+from my_app.models import (check_error_in_session, create_app, create_error_messages, create_sql_condition, create_users,
 issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_hash)
 
 
@@ -19,11 +19,7 @@ def login():
         if 'name' in session:
             return redirect(url_for('list'))
 
-        end = time.time()
-        if 'start' in session:
-            # セッションに残すエラー文の生存時間は1秒
-            if end - session['start'] >= 1:
-                session.clear()
+        check_error_in_session(session, 1)
         return render_template('login.html')
 
     if request.method == 'POST':
@@ -54,14 +50,20 @@ def login():
 
 @app.route('/user/list', methods=['GET','POST'])
 def list():
-    session.pop('errors', None)
-
     if 'name' not in session:
         return redirect(url_for('login'))
 
     if request.method == 'GET':
+        check_error_in_session(session, 0.2)
+        if 'sort' in session:
+            if session['sort'] == 'sort':
+                session.pop('sort', None)
+                return render_template('list.html')
         sql = issue_sql('list')
         rows = select_all(sql)
+        table = issue_table('list')
+        session["users"] = create_users(table, rows)
+        return render_template('list.html')
     # 社員の検索時にPOSTで受け取る
     if request.method == 'POST':
         employee_id = request.form['employee_id']
@@ -73,19 +75,16 @@ def list():
 
     if rows is None:
         session['errors'] = create_error_messages('sort')
+        session['start'] = time.time()
     if len(rows) == 0:
         session['errors'] = create_error_messages('list')
+        session['start'] = time.time()
 
     table = issue_table('list')
-    users = []
-    for row in rows:
-        user = {}
-        for t, r in zip(table, row):
-            user[t] = r
-        users.append(user)
-    session["users"] = users
+    session["users"] = create_users(table, rows)
 
-    return render_template('list.html')
+    session['sort'] = 'sort'
+    return redirect(url_for('list'))
 
 
 @app.route('/user/add', methods=['GET', 'POST'])
@@ -94,12 +93,7 @@ def add():
         return redirect(url_for('login'))
 
     if request.method == 'GET':
-        end = time.time()
-        if 'start' in session:
-            # セッションに残すエラー文の生存時間は1秒
-            if end - session['start'] >= 1:
-                session.pop('errors', None)
-                session.pop('start', None)
+        check_error_in_session(session, 1)
         return render_template('add.html')
     # 新規登録時にPOSTで受け取る
     if request.method == 'POST':
@@ -143,12 +137,7 @@ def edit(employee_id):
     if 'name' not in session:
         return redirect(url_for('login'))
 
-    end = time.time()
-    if 'start' in session:
-        # セッションに残すエラー文の生存時間は1秒
-        if end - session['start'] >= 1:
-            session.pop('errors', None)
-            session.pop('start', None)
+    check_error_in_session(session, 1)
 
     sql = issue_sql('edit_user_info')
     row = select_one(sql, employee_id)

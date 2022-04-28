@@ -2,7 +2,7 @@ from flask import Flask
 import mysql.connector, json
 from datetime import timedelta
 from werkzeug.utils import secure_filename
-import os, hashlib
+import os, hashlib, time
 
 
 def create_app():
@@ -123,3 +123,20 @@ def save_file(file, filename, app_config_UPLOAD_FOLDER):
 
 def create_hash(password):
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+def create_users(table, rows):
+    users = []
+    for row in rows:
+        user = {}
+        for t, r in zip(table, row):
+            user[t] = r
+        users.append(user)
+    return users
+
+# meantimeはセッションに残すエラー文の生存時間
+def check_error_in_session(session, meantime):
+    end = time.time()
+    if 'start' in session:
+        if end - session['start'] >= meantime:
+            session.pop('errors', None)
+            session.pop('start', None)
