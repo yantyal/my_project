@@ -150,7 +150,10 @@ def edit(employee_id):
             else:
                 user[t] = r
     session['user'] = user
-    return render_template('edit.html')
+
+    if request.method == 'GET':
+        return render_template('edit.html')
+    return redirect(url_for('edit', employee_id=employee_id))
 
 
 @app.route('/user/result', methods=['POST'])
