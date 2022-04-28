@@ -2,7 +2,8 @@ from flask import render_template, redirect, url_for
 from flask import request, session
 from datetime import datetime
 import time
-from my_app.models import create_app, create_error_messages, create_sql_condition, issue_table, save_file, select_one, select_all, change_tbl, issue_sql
+from my_app.models import (create_app, create_error_messages, create_sql_condition,
+issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_hash)
 
 
 app = create_app()
@@ -27,7 +28,7 @@ def login():
 
     if request.method == 'POST':
         mail_address = request.form['mail_address']
-        password = request.form['password']
+        password = create_hash(request.form['password'])
         sql = issue_sql('login')
         row = select_one(sql, mail_address, password)
         table = issue_table('login')
@@ -105,7 +106,7 @@ def add():
         name = request.form['name']
         belong_id = request.form['belong_id']
         mail_address = request.form['mail_address']
-        password = request.form['password']
+        password = create_hash(request.form['password'])
         management = request.form.getlist('management')
         if len(management) != 0:
             management = management[0]
@@ -126,13 +127,10 @@ def add():
 
     if not filename and  management != 'Y':
         sql = issue_sql('add', ["0"])
-        # change_tbl(sql, name, belong_id, mail_address, password)
     elif not filename and management == 'Y':
         sql = issue_sql('add', ["1"])
-        # change_tbl(sql, name, belong_id, mail_address, password, management)
     elif filename and management != 'Y':
         sql = issue_sql('add', ["2"])
-        #change_tbl(sql, name, belong_id, mail_address, password, filename)
     else:
         sql = issue_sql('add', ["3"])
     change_tbl(sql, name, belong_id, mail_address, password, filename, management)
@@ -174,7 +172,7 @@ def edit_result():
     name = request.form['name']
     belong_id = request.form['belong_id']
     mail_address = request.form['mail_address']
-    password = request.form['password']
+    password = create_hash(request.form['password'])
     management = request.form.getlist('management')
     if len(management) != 0:
         management = management[0]
@@ -189,7 +187,7 @@ def edit_result():
     sql = issue_sql('edit_check')
     row = select_one(sql, mail_address, password)
     if row is not None:
-        row = str(row[0])
+        row = str(row[0]) # employee_idを取り出している
 
     # メールアドレスとパスワードの重複登録は許さないが、
     # 同一ユーザーなら許可(employee_idで検査)
