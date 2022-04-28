@@ -123,3 +123,12 @@ def save_file(file, filename, app_config_UPLOAD_FOLDER):
 
 def create_hash(password):
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+def create_users(table, rows):
+    users = []
+    for row in rows:
+        user = {}
+        for t, r in zip(table, row):
+            user[t] = r
+        users.append(user)
+    return users
