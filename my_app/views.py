@@ -68,6 +68,7 @@ def list():
     if request.method == 'POST':
         employee_id = request.form['employee_id']
         name = request.form['name']
+        name = '%' + name + '%'
         belong_id = request.form['belong_id']
         sql_condition = create_sql_condition(employee_id, name, belong_id)
         sql = issue_sql('sort', sql_condition)

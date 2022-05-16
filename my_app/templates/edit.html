@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
-    <script src="{{url_for('static', filename = 'js/confirm.js')}}"></script>
+    <script src="{{url_for('static', filename='js/confirm.js')}}"></script>
     <title>ユーザー管理システム</title>
 </head>
 <body>
@@ -37,9 +37,9 @@
             <input class="form-item" type="text" name="name" value="{{ session['user']['name'] }}"required>
             <p>所属を選択してください</p>
             <div class="sort-item">
-                <select name="belong_id">
-                    <option value="{{ session['user']['belong_id'] }}">{{ session['user']['belong_name'] }}</option>
-                    <option value="0">不明</option>
+                <input type="hidden" value="{{ session['user']['belong_id'] }}" id="user_belong_id">
+                <select name="belong_id" id="belong_id">
+                    <option value="0">未定</option>
                     <option value="1">総務課</option>
                     <option value="2">BS事業部</option>
                     <option value="3">CS事業部</option>
@@ -73,4 +73,5 @@
     </div>
     <script src="https://kit.fontawesome.com/75eed8fdb7.js" crossorigin="anonymous"></script>
 </body>
+<script src="{{url_for('static', filename='js/script.js')}}"></script>
 </html>
