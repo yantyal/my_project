@@ -4,33 +4,104 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static', filename = 'css/login.css')}}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/75eed8fdb7.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@300;400;700&display=swap" rel="stylesheet">
     <title>ユーザー管理システム</title>
 </head>
 <body>
-    <div class="form-wrapper">
-        <form action="/login" method="POST">
-            <h1>ユーザー管理システム</h1>
-            <div class="errors">
-                {% if session['errors'] %}
+    <!-- 使いまわしアイコンを定義しておく -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </symbol>
+    </svg>
+    <!-- 認証エラー -->
+    <div class="error-wrapper">
+        {% if session['errors'] %}
+            <div class="container p-0 mt-3">
+                <div class="alert alert-danger d-flex align-items-center alert-warning alert-dismissible fade show" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="警告：">
+                        <use xlink:href="#exclamation-triangle-fill"/>
+                    </svg>
                     {% for message in session['errors'] %}
-                        <div class="error"><p>{{ message }}</p></div>
+                        <div>
+                            {{ message }}
+                        </div>
                     {% endfor %}
-                {% endif %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
-            <p>メールアドレスを入力してください</p>
-            <input class="form-item" type="text" name="mail_address" required>
-            <p>パスワードを入力してください</p>
-            <input id="login" class="form-item" type="password" name="password" required>
-            <!-- TODO buttonの位置を変更 -->
-            <span id="btn_login" class="fa fa-eye" onclick="password_mask()"></span>
-            <input class="form-submit" type="submit" value="送信">
-        </form>
+        {% endif %}
+    </div>
+    <!-- フォーム -->
+    <div class="pt-0">
+        <div class="rounded-3 shadow mb-4 container-wrapper">
+            <div class="container p-3">
+                <!-- タブ型ナビゲーション -->
+                <div class="nav nav-tabs" id="tab-menus">
+                    <!-- タブ01 -->
+                    <a href="#panel-menu01" id="tab-menu01" class="nav-item nav-link active" data-bs-toggle="tab">ユーザー管理システム</a>
+                </div>
+                <!-- /タブ型ナビゲーション -->
+                <!-- タブパネル -->
+                <div class="tab-content" id="panel-menus">
+                    <!-- パネル01 -->
+                    <div class="tab-pane fade show active border border-top-0" id="panel-menu01">
+                        <div class="py-3">
+                            <div class="container">
+                                <!-- フォーム -->
+                                <form action="{{url_for('login')}}" method="POST">
+                                    <!-- メールアドレス -->
+                                    <div class="row px-5 py-1">
+                                        <div class="label-wrapper">
+                                            <label for="email" class="col-form-label">
+                                                メールアドレスを入力してください。
+                                            </label>
+                                        </div>
+                                        <input type="email" name="mail_address" class="form-control rounded-0 border-top-0 border-end-0 border-start-0" id="email" required>
+                                    </div>
+                                    <!-- パスワード -->
+                                    <div class="row px-5 py-1 mb-2">
+                                        <div class="label-wrapper">
+                                            <label for="password" class="col-form-label">
+                                                パスワードを入力してください。
+                                            </label>
+                                        </div>
+                                        <input type="password" name="password" class="form-control rounded-0 border-top-0 border-end-0 border-start-0" id="name" required>
+                                    </div>
+                                    <!-- チェックボックス -->
+                                    <div class="checkbox-wrapper mb-2">
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" name="checkbox" id="checkbox"
+                                            value="checked">
+                                            <div class="checkbox-label-wrapper">
+                                                <label for="checkbox" class="form-check-label">ログイン情報をブラウザに保存</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 確認ボタン -->
+                                    <div class="row py-3">
+                                        <div class="btn-wrapper">
+                                            <button class="btn text-white" type="submit">ログイン</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- /フォーム -->
+                            </div>
+                    </div>
+                </div>
+                <!-- /タブパネル -->
+            </div>
+        </div>
+    </div>
+    <!-- フッター -->
+    <div class="login-footer">
+        <div class="container text-center">
+            <p>
+                <small>&copy;2022, ALL Rights Reserved.</small>
+            </p>
+        </div>
     </div>
 </body>
-<script src="{{url_for('static', filename = 'js/script.js')}}"></script>
 </html>
