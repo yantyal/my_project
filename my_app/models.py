@@ -8,7 +8,7 @@ import os, hashlib, time
 def create_app():
     app = Flask(__name__, static_folder="static")
     app.config.from_envvar('APPLICATION_SETTINGS')
-    app.permanent_session_lifetime = timedelta(minutes=3) # セッションの生存時間は3分
+    app.permanent_session_lifetime = timedelta(minutes=30) # セッションの生存時間は30分
     return app
 
 
