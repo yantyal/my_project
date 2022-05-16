@@ -1,0 +1,166 @@
+@charset "UTF-8";
+a,
+p,
+h3,
+h4,
+button,
+label,
+input{
+    font-family: 'M PLUS 1p', sans-serif;
+}
+body{
+    background-color: rgb(204, 202, 202);
+}
+
+/* ナビゲーションバー */
+.form-wrapper{
+    max-width: 200px;
+}
+.nav-input-radius{
+    border-radius: 18px 0 0 18px;
+}
+.nav-btn-radius{
+    border-radius: 0 18px 18px 0;
+}
+.nav-opacity{
+    max-width: 120px;
+    border-radius: 18px;
+    transition: all 0.5s;
+}
+.nav-opacity:hover{
+    background-color: rgba(255, 255, 255,.5);
+}
+
+/* ログイン画面 */
+.error-wrapper{
+    height: 80px;
+}
+.error-wrapper .container{
+    background-color: rgb(204, 202, 202);
+    z-index: 3;
+}
+.container-wrapper{
+    max-width: 400px;
+    border: 1px rgb(205, 204, 204) solid;
+    margin: auto;
+}
+.container-wrapper a{
+    font-weight: bold;
+    color: rgb(139, 194, 239) !important;
+    text-align: center;
+}
+.container-wrapper .container{
+    background-color: white;
+}
+.btn-wrapper{
+    text-align: center;
+}
+.btn-wrapper button{
+    background-color: rgb(139, 194, 239);
+    display: inline;
+    width: 100px;
+    transition: all 0.5s;
+}
+.btn-wrapper button:hover{
+    background-color: rgb(81, 169, 241);
+    color: white;
+}
+.label-wrapper{
+    text-align: center;
+}
+.label-wrapper label{
+    font-size: 12px;
+    color: rgb(172, 173, 175);
+}
+.checkbox-wrapper{
+    text-align: center;
+}
+.checkbox-label-wrapper{
+    font-size: 12px;
+    color: rgb(134, 135, 136);
+}
+.login-footer .container{
+    background-color: rgb(204, 202, 202);
+}
+
+
+/* リスト */
+
+.table-stripe tr:nth-of-type(2n) {
+    background-color: rgba(0,0,0,.05);
+}
+.list-container{
+    background-color: white;
+    margin: 20px;
+}
+.btn-item{
+    background-color: rgb(0, 0, 0, 0);
+    border: none;
+    z-index: 2;
+    transition: all 0.5s;
+}
+.btn-item svg{
+    color: black;
+}
+
+/* 新規登録 */
+.add-container{
+    min-height: 440px;
+}
+.add-container p{
+    font-size: 12px;
+    color: rgb(134, 135, 136);
+}
+.add-container-wrapper{
+    max-width: 400px;
+    border: 1px rgb(205, 204, 204) solid;
+    margin: auto;
+}
+.add-container-wrapper a{
+    font-weight: bold;
+    color: #dc3545 !important;
+    text-align: center;
+}
+.add-container-wrapper .detail{
+    color: #040404 !important;
+}
+.add-container-wrapper .container{
+    background-color: white;
+}
+.img-fit{
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+}
+.file-label {
+    padding: 5px 10px;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #697db8;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.file-label:hover{
+    background-color: #4866be;
+}
+input[type="file"] {
+    display: none;
+}
+
+/* 編集 */
+.edit-container-wrapper{
+    max-width: 400px;
+    border: 1px rgb(205, 204, 204) solid;
+    margin: auto;
+}
+.edit-container-wrapper a{
+    font-weight: bold;
+    color: #198754 !important;
+    text-align: center;
+}
+.edit-container-wrapper .detail{
+    color: #040404 !important;
+}
+.edit-container-wrapper .container{
+    background-color: white;
+}
