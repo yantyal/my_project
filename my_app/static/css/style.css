@@ -8,6 +8,9 @@ label,
 input{
     font-family: 'M PLUS 1p', sans-serif;
 }
+a{
+    text-decoration: none;
+}
 body{
     background-color: rgb(204, 202, 202);
 }
@@ -23,7 +26,7 @@ body{
     border-radius: 0 18px 18px 0;
 }
 .nav-opacity{
-    max-width: 120px;
+    max-width: 150px;
     border-radius: 18px;
     transition: all 0.5s;
 }

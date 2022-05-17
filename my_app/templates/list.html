@@ -65,7 +65,7 @@
                         </div>
                     </li>
                     <li class="nav-item ps-2 px-md-2">
-                        <a href="/user/edit/{{session['employee_id']}}" class="nav-link text-white px-3 nav-opacity">
+                        <a href="/user/edit/{{session['employee_id']}}" class="nav-link text-white text-nowrap text-truncate px-3 px-sm-0 px-md-1 nav-opacity">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill mb-1" viewBox="0 0 16 16">
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                             </svg>
@@ -73,7 +73,7 @@
                         </a>
                     </li>
                     <li class="nav-item ps-2 px-md-2">
-                        <a href="{{url_for('logout')}}" class="nav-link text-white px-3 nav-opacity">ログアウト</a>
+                        <a href="{{url_for('logout')}}" class="nav-link text-white px-3 px-sm-0 px-md-1 nav-opacity">ログアウト</a>
                     </li>
                 </ul>
                 <!-- ナビゲーションメニュー -->
@@ -103,7 +103,7 @@
     <main>
         <div class="pb-2">
             <div class="list-container px-3 py-2">
-                <h4 class="m-1">社員一覧リスト</h4>
+                <h4 class="m-1"><a href="{{url_for('list')}}" class="text-secondary">社員一覧リスト</a></h4>
                 <div class="d-flex">
                     <div class="dropdown mx-1 my-2">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -182,7 +182,7 @@
                 </div>
                 <div class="table-responsive">
                     <table class="table table-borderless table-hover">
-                        <caption class="text-end">社員一覧リスト</caption>
+                        <caption class="text-end"><small><a href="{{url_for('list')}}" class="text-muted">社員一覧リスト</a></small></caption>
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" class="text-nowrap">社員ID</th>
