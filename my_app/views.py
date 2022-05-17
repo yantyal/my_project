@@ -71,6 +71,8 @@ def list():
         belong_id = ''
         if 'sort' in request.form:
             sort = request.form['sort']
+            if sort == '':
+                return redirect(url_for('list'))
             sort_employee_id = sort
             sort_name = '%' + sort + '%'
         if 'belong_id' in request.form:
