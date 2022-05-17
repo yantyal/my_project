@@ -33,7 +33,7 @@ body{
 
 /* ログイン画面 */
 .error-wrapper{
-    height: 80px;
+    height: 70px;
 }
 .error-wrapper .container{
     background-color: rgb(204, 202, 202);
@@ -91,7 +91,7 @@ body{
 }
 .list-container{
     background-color: white;
-    margin: 20px;
+    margin: 0 20px 20px 20px;
 }
 .btn-item{
     background-color: rgb(0, 0, 0, 0);
