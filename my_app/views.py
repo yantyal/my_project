@@ -172,7 +172,11 @@ def edit_result():
     name = request.form['name']
     belong_id = request.form['belong_id']
     mail_address = request.form['mail_address']
-    password = create_hash(request.form['password'])
+    plane = request.form['password']
+    if plane == '':
+        password = session['user']['password']
+    else:
+        password = create_hash(plane)
     management = request.form.getlist('management')
     if len(management) != 0:
         management = management[0]
