@@ -174,7 +174,7 @@
                     </div>
                     {% if session['management'] == 'Y' %}
                         <div class="ms-1 my-2">
-                            <form action="{{ url_for('add') }}" method="POST">
+                            <form action="{{ url_for('add') }}" method="GET">
                                 <input type="submit" class="btn btn-danger text-white" value="新規登録">
                             </form>
                         </div>
