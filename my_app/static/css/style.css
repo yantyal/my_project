@@ -14,6 +14,8 @@ a{
 body{
     background-color: rgb(204, 202, 202);
 }
+
+/* パスワードのマスク表示 */
 .password-position{
     position: relative;
 }
