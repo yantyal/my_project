@@ -19,8 +19,8 @@
         "3": " from employee_tbl as e inner join belong_master_tbl as b",
         "4": " where e.belong_id = b.belong_id",
         "5": " and e.deleted_datetime is null",
-        "6": {"0": " and e.employee_id=%s",
-            "1": " and e.name like %s",
+        "6": {"0": " and ( e.employee_id=%s",
+            "1": " or e.name like %s )",
             "2": " and e.belong_id=%s"},
         "7": " order by management desc, employee_id"},
 
