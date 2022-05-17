@@ -66,9 +66,9 @@ def list():
         return render_template('list.html')
     # 社員の検索時にPOSTで受け取る
     if request.method == 'POST':
-        sort_employee_id = None
-        sort_name = None
-        belong_id = '0'
+        sort_employee_id = ''
+        sort_name = ''
+        belong_id = ''
         if 'sort' in request.form:
             sort = request.form['sort']
             sort_employee_id = sort
@@ -77,7 +77,7 @@ def list():
             belong_id = request.form['belong_id']
         sql_condition = create_sql_condition(sort_employee_id, sort_name, belong_id)
         sql = issue_sql('sort', sql_condition)
-        rows = select_all(sql, sort, sort_name, belong_id)
+        rows = select_all(sql, sort_employee_id, sort_name, belong_id)
 
     if rows is None:
         session['errors'] = create_error_messages('sort')

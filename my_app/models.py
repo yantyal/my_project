@@ -43,7 +43,7 @@ def select_all(sql, *args):
     conn = connect_db()
     cursor = conn.cursor()
     try:
-        cursor.execute(sql, [arg for arg in args if arg != '' and arg != '0'])
+        cursor.execute(sql, [arg for arg in args if arg != ''])
         rows = cursor.fetchall()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)
@@ -85,7 +85,7 @@ def create_sql_condition(employee_id, name, belong_id):
         sql_condition.append("0")
     if name:
         sql_condition.append("1")
-    if belong_id != '0':
+    if belong_id != '':
         sql_condition.append("2")
     return sql_condition
 
