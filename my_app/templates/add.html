@@ -4,66 +4,190 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static', filename = 'css/add.css')}}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&display=swap" rel="stylesheet">
-    <script src="{{url_for('static', filename = 'js/confirm.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@300;400;700&display=swap" rel="stylesheet">
     <title>ユーザー管理システム</title>
 </head>
 <body>
-    <header>
+    <!-- 使いまわしアイコンを定義しておく -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </symbol>
+    </svg>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+        <!-- サブコンポーネント -->
         <div class="container">
-            <div class="header-left"><a href="/user/list">ユーザー管理システム</a></div>
-            <div class="header-right">
-                <ul>
-                    <li><i class="fas fa-user"></i>{{ session['name'] }}</li>
-                    <li><a href="/logout">ログアウト</a></li>
+            <!-- ブランド -->
+            <a href="{{url_for('list')}}" class="navbar-brand">ユーザー管理システム</a>
+            <!-- 切り替えボタン -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbar-content">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- ナビゲーション -->
+            <div class="collapse navbar-collapse" id="navbar-content">
+                <!-- ナビゲーションメニュー -->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item ps-2 px-md-2">
+                        <a href="/user/edit/{{session['employee_id']}}" class="nav-link text-white px-3 nav-opacity">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill mb-1" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                            {{ session['name'] }}
+                        </a>
+                    </li>
+                    <li class="nav-item ps-2 px-md-2">
+                        <a href="{{url_for('logout')}}" class="nav-link text-white px-3 nav-opacity">ログアウト</a>
+                    </li>
                 </ul>
+                <!-- ナビゲーションメニュー -->
             </div>
         </div>
-    </header>
-    <div class="form-wrapper">
-        <form action="/user/add" method="POST" onSubmit="return add_check()" enctype="multipart/form-data">
-            <h1>新規登録</h1>
-            <div class="errors">
-                {% if session['errors'] %}
+        <!-- /サブコンポーネント -->
+    </nav>
+    <!-- /ナビゲーションバー -->
+    <!-- 認証エラー -->
+    <div class="error-wrapper mt-2">
+        {% if session['errors'] %}
+            <div class="container p-0 mt-0">
+                <div class="alert alert-danger d-flex align-items-center alert-warning alert-dismissible fade show" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="警告：">
+                        <use xlink:href="#exclamation-triangle-fill"/>
+                    </svg>
                     {% for message in session['errors'] %}
-                        <div class="error"><p>{{ message }}</p></div>
+                        <div>
+                            {{ message }}
+                        </div>
                     {% endfor %}
-                {% endif %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
-            <p>名前を入力してください</p>
-            <input class="form-item" type="text" name="name" required>
-            <p>所属を選択してください</p>
-            <div class="sort-item">
-                <select name="belong_id">
-                    <option value="0">未定</option>
-                    <option value="1">総務課</option>
-                    <option value="2">BS事業部</option>
-                    <option value="3">CS事業部</option>
-                    <option value="4">営業課</option>
-                    <option value="5">1課</option>
-                    <option value="6">2課</option>
-                    <option value="7">3課</option>
-                    <option value="8">4課</option>
-                    <option value="9">5課</option>
-                </select>
-            </div>
-            <p>メールアドレスを入力してください</p>
-            <input class="form-item" type="text" name="mail_address" required>
-            <p>パスワードを入力してください</p>
-            <input class="form-item" type="password" name="password" required>
-            <p>管理者権限を付与する場合はチェックしてください</p>
-            <div class="management-checkbox">
-                <label for="management">管理者権限</label>
-                <input type="checkbox" name="management" value="Y">
-            </div>
-            <p><input type="file" name="file"></p>
-            <input class="form-submit" type="submit" value="新規登録">
-        </form>
-        <a class="back" href="{{ url_for('list') }}">社員一覧リストへ</a>
+        {% endif %}
     </div>
-    <script src="https://kit.fontawesome.com/75eed8fdb7.js" crossorigin="anonymous"></script>
+    <div class="pt-0">
+        <div class="rounded-3 shadow mb-4 add-container-wrapper">
+            <!-- フォーム -->
+            <form action="{{url_for('add')}}" method="POST" enctype="multipart/form-data">
+                <div class="container p-3 add-container">
+                    <!-- タブ型ナビゲーション -->
+                    <div class="nav nav-tabs" id="tab-menus">
+                        <!-- タブ01 -->
+                        <a href="#panel-menu01" id="tab-menu01" class="nav-item nav-link active" data-bs-toggle="tab">必須項目</a>
+                        <!-- タブ02 -->
+                        <a href="#panel-menu02" id="tab-menu02" class="nav-item nav-link detail" data-bs-toggle="tab">詳細情報</a>
+                    </div>
+                    <!-- /タブ型ナビゲーション -->
+                    <!-- タブパネル -->
+                    <div class="tab-content" id="panel-menus">
+                        <!-- パネル01 -->
+                        <div class="tab-pane fade show active border border-top-0" id="panel-menu01">
+                            <div class="py-3">
+                                <div class="container">
+                                    <!-- 名前 -->
+                                    <div class="row px-5 py-1">
+                                        <div class="label-wrapper">
+                                            <label for="name" class="col-form-label">
+                                                名前を入力してください。
+                                            </label>
+                                        </div>
+                                        <input type="text" name="name" class="form-control rounded-0 border-top-0 border-end-0 border-start-0" id="name" required>
+                                    </div>
+                                    <!-- メールアドレス -->
+                                    <div class="row px-5 py-1">
+                                        <div class="label-wrapper">
+                                            <label for="email" class="col-form-label">
+                                                メールアドレスを入力してください。
+                                            </label>
+                                        </div>
+                                        <input type="email" name="mail_address" class="form-control rounded-0 border-top-0 border-end-0 border-start-0" id="email" required>
+                                    </div>
+                                    <!-- パスワード -->
+                                    <div class="row px-5 py-1 mb-2">
+                                        <div class="label-wrapper">
+                                            <label for="password" class="col-form-label">
+                                                パスワードを入力してください。
+                                            </label>
+                                        </div>
+                                        <input type="password" name="password" class="form-control rounded-0 border-top-0 border-end-0 border-start-0" id="name" required>
+                                    </div>
+                                    <!-- 確認ボタン -->
+                                    <div class="row py-3 mb-1">
+                                        <div class="text-center">
+                                            <button class="btn btn-danger text-white" type="submit">新規登録</button>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0">詳細情報は上のタブをクリックして登録することができます。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- パネル02 -->
+                        <div class="tab-pane fade border border-top-0" id="panel-menu02">
+                            <div class="py-3">
+                                <div class="container">
+                                    <!-- 写真アップロード -->
+                                    <div class="row mb-2">
+                                        <div class="col-5">
+                                            <img src="{{url_for('static', filename = 'img/noimage.png')}}" alt="社員イメージ画像" id="preview" class="rounded-pill img-fit">
+                                        </div>
+                                        <div class="col-7 text-center">
+                                            <p class="mb-4">写真をアップロードできます</p>
+                                            <label class="file-label">
+                                                <input type="file" name="file" id="file" class="btn-sm">ファイルを選択
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- 所属部署選択 -->
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p class="mt-2">所属部署を選択してください</p>
+                                        </div>
+                                        <div class="col-6">
+                                            <select name="belong_id" class="form-select form-select-sm mb-2">
+                                                <option value="0">未定</option>
+                                                <option value="1">総務課</option>
+                                                <option value="2">BS事業部</option>
+                                                <option value="3">CS事業部</option>
+                                                <option value="4">営業課</option>
+                                                <option value="5">1課</option>
+                                                <option value="6">2課</option>
+                                                <option value="7">3課</option>
+                                                <option value="8">4課</option>
+                                                <option value="9">5課</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- 管理者権限用チェックボックス -->
+                                    <div class="checkbox-wrapper mb-2">
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" name="management" id="checkbox" value="Y">
+                                            <div class="checkbox-label-wrapper">
+                                                <label for="checkbox" class="form-check-label">管理者権限を付与する場合はチェックしてください</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /タブパネル -->
+                </div>
+            </form>
+            <!-- /フォーム -->
+        </div>
+    </div>
+    <!-- フッター -->
+    <div class="login-footer">
+        <div class="container text-center">
+            <p>
+                <small>&copy;2022, ALL Rights Reserved.</small>
+            </p>
+        </div>
+    </div>
+
+    <script src="{{url_for('static', filename = 'js/script.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/bootstrap.bundle.min.js')}}"></script>
 </body>
 </html>
