@@ -110,15 +110,66 @@
                             部署名
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="#" class="dropdown-item">総務部</a></li>
-                            <li><a href="#" class="dropdown-item">BS事業部</a></li>
-                            <li><a href="#" class="dropdown-item">CS事業部</a></li>
-                            <li><a href="#" class="dropdown-item">システム1課</a></li>
-                            <li><a href="#" class="dropdown-item">システム2課</a></li>
-                            <li><a href="#" class="dropdown-item">システム3課</a></li>
-                            <li><a href="#" class="dropdown-item">システム4課</a></li>
-                            <li><a href="#" class="dropdown-item">システム5課</a></li>
-                            <li><a href="#" class="dropdown-item">営業課</a></li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="1">
+                                    <button type="submit" class="dropdown-item">総務課</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="2">
+                                    <button type="submit" class="dropdown-item">BS事業部</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="3">
+                                    <button type="submit" class="dropdown-item">CS事業部</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="4">
+                                    <button type="submit" class="dropdown-item">営業課</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="5">
+                                    <button type="submit" class="dropdown-item">システム1課</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="6">
+                                    <button type="submit" class="dropdown-item">システム2課</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="7">
+                                    <button type="submit" class="dropdown-item">システム3課</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="8">
+                                    <button type="submit" class="dropdown-item">システム4課</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="9">
+                                    <button type="submit" class="dropdown-item">システム5課</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="{{url_for('list')}}" method="POST">
+                                    <input type="hidden" name="belong_id" value="0">
+                                    <button type="submit" class="dropdown-item">未定</button>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                     {% if session['management'] == 'Y' %}
