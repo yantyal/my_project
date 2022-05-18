@@ -1,8 +1,8 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, make_response
 from flask import request, session
 from datetime import datetime
-import time
-from my_app.models import (check_error_in_session, create_app, create_error_messages, create_sql_condition, create_users,
+import time, json
+from my_app.models import (check_error_in_session, check_success_in_session, create_app, create_error_messages, create_sql_condition, create_success_messages, create_users,
 issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_hash)
 
 
@@ -19,17 +19,47 @@ def login():
         if 'name' in session:
             return redirect(url_for('list'))
 
-        check_error_in_session(session, 1)
-        return render_template('login.html')
+        user_info = request.cookies.get('user_info')
+        if user_info is None:
+            check_error_in_session(session, 1)
+            return render_template('login.html')
 
-    if request.method == 'POST':
-        mail_address = request.form['mail_address']
-        password = create_hash(request.form['password'])
+        # クッキーにユーザー情報があればログイン
+        user_info = json.loads(user_info)
+        mail_address = user_info['mail_address']
+        password = user_info['password']
         sql = issue_sql('login')
         row = select_one(sql, mail_address, password)
         table = issue_table('login')
 
-    # エラー発生時は1で、リダイレクト先を変える
+        # ログインが拒否された場合はリダイレクト先を変える
+        # 社員一覧リスト(0) ログイン画面(1)
+        redirect_number = 0
+        if row is not None:
+            for t, r in zip(table, row):
+                session[t] = r
+                if t == 'deleted_datetime' and r is not None:
+                    redirect_number = 1
+        else:
+            redirect_number = 1
+
+        if redirect_number == 0:
+            return redirect(url_for('list'))
+        else:
+            return render_template('login.html')
+
+    if request.method == 'POST':
+        mail_address = request.form['mail_address']
+        password = create_hash(request.form['password'])
+        check_cookie = request.form.getlist('check_cookie')
+        if len(check_cookie) != 0:
+            check_cookie = check_cookie[0]
+        sql = issue_sql('login')
+        row = select_one(sql, mail_address, password)
+        table = issue_table('login')
+
+    # ログインが拒否された場合はリダイレクト先を変える
+    # 社員一覧リスト(0) ログイン画面(1)
     redirect_number = 0
     if row is not None:
         for t, r in zip(table, row):
@@ -39,14 +69,21 @@ def login():
     else:
         redirect_number = 1
 
-    if redirect_number == 0:
-        return redirect(url_for('list'))
-    else:
+    if redirect_number == 1:
         session.clear()
         session['errors'] = create_error_messages('login')
         session['start'] = time.time()
         return redirect(url_for('login'))
 
+    if check_cookie == 'ok':
+        max_age = 30 # クッキーの生存時間は30秒
+        expires = int(datetime.now().timestamp()) + max_age
+        response = make_response(redirect(url_for('list')))
+        user_info = {'mail_address': mail_address, 'password': password}
+        response.set_cookie("user_info", value=json.dumps(user_info), expires=expires)
+        return response
+    else:
+        return redirect(url_for('list'))
 
 @app.route('/user/list', methods=['GET','POST'])
 def list():
@@ -146,6 +183,7 @@ def edit(employee_id):
         return redirect(url_for('login'))
 
     check_error_in_session(session, 1)
+    check_success_in_session(session, 1)
 
     sql = issue_sql('edit_user_info')
     row = select_one(sql, employee_id)
@@ -211,7 +249,36 @@ def edit_result():
 
     change_tbl(sql, name, belong_id, mail_address, password, filename, management, employee_id)
 
-    return redirect(url_for('list'))
+    session['success'] = create_success_messages('edit')
+    session['success_start'] = time.time()
+    # return redirect(url_for('list'))
+    # TODO 社員一覧リストに成功文を出すか検証
+    return redirect(url_for('edit', employee_id=employee_id))
+
+
+@app.route('/change/password', methods=['POST'])
+def change_password():
+    old_password = request.form['old_password']
+    new_password = request.form['new_password']
+    confirm_password = request.form['confirm_password']
+    employee_id = request.form['employee_id']
+
+    if new_password != confirm_password:
+        session['errors'] = create_error_messages('change_password_new_confirm')
+        session['start'] = time.time()
+        return redirect(url_for('edit', employee_id=employee_id))
+
+    if create_hash(old_password) != session['user']['password']:
+        session['errors'] = create_error_messages('change_password_old')
+        session['start'] = time.time()
+        return redirect(url_for('edit', employee_id=employee_id))
+
+    new_password = create_hash(new_password)
+    sql = issue_sql('change_password')
+    change_tbl(sql, new_password, employee_id)
+    session['success'] = create_success_messages('change_password')
+    session['success_start'] = time.time()
+    return redirect(url_for('edit', employee_id=employee_id))
 
 
 @app.route('/user/delete/<employee_id>', methods=['POST'])

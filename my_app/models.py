@@ -140,3 +140,20 @@ def check_error_in_session(session, meantime):
         if end - session['start'] >= meantime:
             session.pop('errors', None)
             session.pop('start', None)
+
+# 成功メッセージを配列で返すメソッド
+def create_success_messages(success_name):
+    with open('json/success.json', 'r', encoding='utf-8') as file:
+        success = json.load(file)
+    messages = []
+    for index in success[success_name]:
+        messages.extend(success[success_name][index])
+    return messages
+
+# meantimeはセッションに残す成功文の生存時間
+def check_success_in_session(session, meantime):
+    end = time.time()
+    if 'success_start' in session:
+        if end - session['success_start'] >= meantime:
+            session.pop('success', None)
+            session.pop('success_start', None)
