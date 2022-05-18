@@ -21,6 +21,8 @@ body{
 }
 .btn-view-password{
     color: rgb(172, 173, 175);
+}
+.btn-view-password-position{
     position: absolute;
     top: 5px;
     right: 15px;
