@@ -31,7 +31,8 @@ def login():
         row = select_one(sql, mail_address, password)
         table = issue_table('login')
 
-        # エラー発生時は1で、リダイレクト先を変える
+        # ログインが拒否された場合はリダイレクト先を変える
+        # 社員一覧リスト(0) ログイン画面(1)
         redirect_number = 0
         if row is not None:
             for t, r in zip(table, row):
@@ -56,7 +57,8 @@ def login():
         row = select_one(sql, mail_address, password)
         table = issue_table('login')
 
-    # エラー発生時は1で、リダイレクト先を変える
+    # ログインが拒否された場合はリダイレクト先を変える
+    # 社員一覧リスト(0) ログイン画面(1)
     redirect_number = 0
     if row is not None:
         for t, r in zip(table, row):
