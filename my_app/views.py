@@ -24,6 +24,7 @@ def login():
             check_error_in_session(session, 1)
             return render_template('login.html')
 
+        # クッキーにユーザー情報があればログイン
         user_info = json.loads(user_info)
         mail_address = user_info['mail_address']
         password = user_info['password']
