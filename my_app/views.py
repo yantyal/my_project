@@ -251,6 +251,29 @@ def edit_result():
     return redirect(url_for('list'))
 
 
+@app.route('/change/password', methods=['POST'])
+def change_password():
+    old_password = request.form['old_password']
+    new_password = request.form['new_password']
+    confirm_password = request.form['confirm_password']
+    employee_id = request.form['employee_id']
+
+    if new_password != confirm_password:
+        session['errors'] = create_error_messages('change_password_new_confirm')
+        session['start'] = time.time()
+        return redirect(url_for('edit', employee_id=employee_id))
+
+    if create_hash(old_password) != session['user']['password']:
+        session['errors'] = create_error_messages('change_password_old')
+        session['start'] = time.time()
+        return redirect(url_for('edit', employee_id=employee_id))
+
+    new_password = create_hash(new_password)
+    sql = issue_sql('change_password')
+    change_tbl(sql, new_password, employee_id)
+    return redirect(url_for('edit', employee_id=employee_id))
+
+
 @app.route('/user/delete/<employee_id>', methods=['POST'])
 def delete(employee_id):
     deleted_datetime = datetime.now().strftime('%Y-%m-%d')

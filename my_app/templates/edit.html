@@ -189,7 +189,7 @@
     </div>
     <!-- パスワード更新用モーダル -->
     <div class="modal fade" id="modal" tabindex="-1">
-        <form action="">
+        <form action="{{url_for('change_password')}}" method="POST">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-light px-3 py-2">
@@ -232,7 +232,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- パスワード -->
+                            <!-- 確認用パスワード -->
                             <div class="row pe-5">
                                 <div class="modal-label-wrapper mb-1">
                                     <label for="confirm_password">
@@ -249,6 +249,8 @@
                                     </button>
                                 </div>
                             </div>
+                            <!-- 社員ID -->
+                            <input type="hidden" name="employee_id" value="{{ session['user']['employee_id'] }}">
                         </div>
                     </div>
                     <div class="modal-footer px-3 pt-0 pb-1">
