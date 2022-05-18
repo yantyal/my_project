@@ -249,7 +249,11 @@ def edit_result():
 
     change_tbl(sql, name, belong_id, mail_address, password, filename, management, employee_id)
 
-    return redirect(url_for('list'))
+    session['success'] = create_success_messages('edit')
+    session['success_start'] = time.time()
+    # return redirect(url_for('list'))
+    # TODO 社員一覧リストに成功文を出すか検証
+    return redirect(url_for('edit', employee_id=employee_id))
 
 
 @app.route('/change/password', methods=['POST'])
