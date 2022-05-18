@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, make_response
 from flask import request, session
 from datetime import datetime
 import time, json
-from my_app.models import (check_error_in_session, create_app, create_error_messages, create_sql_condition, create_users,
+from my_app.models import (check_error_in_session, check_success_in_session, create_app, create_error_messages, create_sql_condition, create_success_messages, create_users,
 issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_hash)
 
 
@@ -183,6 +183,7 @@ def edit(employee_id):
         return redirect(url_for('login'))
 
     check_error_in_session(session, 1)
+    check_success_in_session(session, 1)
 
     sql = issue_sql('edit_user_info')
     row = select_one(sql, employee_id)
@@ -271,6 +272,8 @@ def change_password():
     new_password = create_hash(new_password)
     sql = issue_sql('change_password')
     change_tbl(sql, new_password, employee_id)
+    session['success'] = create_success_messages('change_password')
+    session['success_start'] = time.time()
     return redirect(url_for('edit', employee_id=employee_id))
 
 
