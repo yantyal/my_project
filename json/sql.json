@@ -53,6 +53,9 @@
             "2": "password=%s, image_file_path=%s, management=NULL where employee_id=%s",
             "3": "password=%s, image_file_path=%s, management=%s where employee_id=%s"}},
 
+    "change_password":
+        {"0": "update employee_tbl set password=%s where employee_id=%s"},
+
     "delete":
         {"0": "update employee_tbl set deleted_datetime=%s where employee_id=%s"}
 }
