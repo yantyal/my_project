@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, make_response
 from flask import request, session
+from werkzeug.exceptions import HTTPException
 from datetime import datetime
 import time, json
 from my_app.models import (check_error_in_session, check_success_in_session, create_app, create_error_messages, create_sql_condition, create_success_messages, create_users,
@@ -12,7 +13,7 @@ app = create_app()
 def index():
     return redirect(url_for('login'))
 
-
+# ログイン
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
@@ -85,6 +86,7 @@ def login():
     else:
         return redirect(url_for('list'))
 
+# 社員一覧リスト
 @app.route('/user/list', methods=['GET','POST'])
 def list():
     if 'name' not in session:
@@ -131,11 +133,14 @@ def list():
     session['sort'] = 'sort'
     return redirect(url_for('list'))
 
-
+# 新規登録
 @app.route('/user/add', methods=['GET', 'POST'])
 def add():
     if 'name' not in session:
         return redirect(url_for('login'))
+
+    if session['management'] != 'Y':
+        return redirect(url_for('list'))
 
     if request.method == 'GET':
         check_error_in_session(session, 1)
@@ -176,11 +181,14 @@ def add():
 
     return redirect(url_for('list'))
 
-
+# 編集
 @app.route('/user/edit/<employee_id>', methods=['GET', 'POST'])
 def edit(employee_id):
     if 'name' not in session:
         return redirect(url_for('login'))
+
+    if str(session['employee_id']) != employee_id and session['management'] != 'Y':
+        return redirect(url_for('list'))
 
     check_error_in_session(session, 1)
     check_success_in_session(session, 1)
@@ -201,11 +209,14 @@ def edit(employee_id):
         return render_template('edit.html')
     return redirect(url_for('edit', employee_id=employee_id))
 
-
+# 編集画面からの更新を受け付ける
 @app.route('/user/result', methods=['POST'])
 def edit_result():
     if 'name' not in session:
         return redirect(url_for('login'))
+
+    if str(session['employee_id']) != str(session['user']['employee_id']) and session['management'] != 'Y':
+        return redirect(url_for('list'))
 
     name = request.form['name']
     belong_id = request.form['belong_id']
@@ -255,13 +266,25 @@ def edit_result():
     # TODO 社員一覧リストに成功文を出すか検証
     return redirect(url_for('edit', employee_id=employee_id))
 
-
+# パスワード変更
 @app.route('/change/password', methods=['POST'])
 def change_password():
     old_password = request.form['old_password']
     new_password = request.form['new_password']
     confirm_password = request.form['confirm_password']
     employee_id = request.form['employee_id']
+
+    if str(session['employee_id']) != employee_id and session['management'] != 'Y':
+        return redirect(url_for('list'))
+
+    if old_password == "":
+        return redirect(url_for('list'))
+    if new_password == "":
+        return redirect(url_for('list'))
+    if confirm_password == "":
+        return redirect(url_for('list'))
+    if employee_id == "":
+        return redirect(url_for('list'))
 
     if new_password != confirm_password:
         session['errors'] = create_error_messages('change_password_new_confirm')
@@ -280,15 +303,18 @@ def change_password():
     session['success_start'] = time.time()
     return redirect(url_for('edit', employee_id=employee_id))
 
-
+# 削除(実際にはデータは削除しない)
 @app.route('/user/delete/<employee_id>', methods=['POST'])
 def delete(employee_id):
+    if session['management'] != 'Y':
+        return redirect(url_for('list'))
+
     deleted_datetime = datetime.now().strftime('%Y-%m-%d')
     sql = issue_sql('delete')
     change_tbl(sql, deleted_datetime, employee_id)
     return redirect(url_for('list'))
 
-
+# ログアウト
 @app.route('/logout')
 def logout():
     session.clear()
