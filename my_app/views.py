@@ -8,6 +8,7 @@ issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_ha
 
 
 app = create_app()
+DB_INFO = app.config['DB_INFO']
 
 @app.route('/')
 def index():
@@ -30,7 +31,7 @@ def login():
         mail_address = user_info['mail_address']
         password = user_info['password']
         sql = issue_sql('login')
-        row = select_one(sql, mail_address, password)
+        row = select_one(DB_INFO, sql, mail_address, password)
         table = issue_table('login')
 
         # ログインが拒否された場合はリダイレクト先を変える
@@ -56,7 +57,7 @@ def login():
         if len(check_cookie) != 0:
             check_cookie = check_cookie[0]
         sql = issue_sql('login')
-        row = select_one(sql, mail_address, password)
+        row = select_one(DB_INFO, sql, mail_address, password)
         table = issue_table('login')
 
     # ログインが拒否された場合はリダイレクト先を変える
@@ -100,7 +101,7 @@ def list():
                 session.pop('sort', None)
                 return render_template('list.html')
         sql = issue_sql('list')
-        rows = select_all(sql)
+        rows = select_all(DB_INFO, sql)
         table = issue_table('list')
         session["users"] = create_users(table, rows)
         return render_template('list.html')
@@ -119,7 +120,7 @@ def list():
             belong_id = request.form['belong_id']
         sql_condition = create_sql_condition(sort_employee_id, sort_name, belong_id)
         sql = issue_sql('sort', sql_condition)
-        rows = select_all(sql, sort_employee_id, sort_name, belong_id)
+        rows = select_all(DB_INFO, sql, sort_employee_id, sort_name, belong_id)
 
     if rows is None:
         session['errors'] = create_error_messages('sort')
@@ -163,7 +164,7 @@ def add():
         if file.filename != '':
             filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
         sql = issue_sql('add_check')
-        row = select_one(sql, mail_address, password)
+        row = select_one(DB_INFO, sql, mail_address, password)
 
     if row is not None:
         session['errors'] = create_error_messages('add')
@@ -178,7 +179,7 @@ def add():
         sql = issue_sql('add', ["2"])
     else:
         sql = issue_sql('add', ["3"])
-    change_tbl(sql, name, belong_id, mail_address, password, filename, management)
+    change_tbl(DB_INFO, sql, name, belong_id, mail_address, password, filename, management)
 
     session['success'] = create_success_messages('add')
     session['success_start'] = time.time()
@@ -197,7 +198,7 @@ def edit(employee_id):
     check_success_in_session(session, 1)
 
     sql = issue_sql('edit_user_info')
-    row = select_one(sql, employee_id)
+    row = select_one(DB_INFO, sql, employee_id)
     table = issue_table('edit')
     user = {}
     if row is not None:
@@ -241,7 +242,7 @@ def edit_result():
         filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
     employee_id = request.form['employee_id']
     sql = issue_sql('edit_check')
-    row = select_one(sql, mail_address, password)
+    row = select_one(DB_INFO, sql, mail_address, password)
     if row is not None:
         row = str(row[0]) # employee_idを取り出している
 
@@ -261,7 +262,7 @@ def edit_result():
     else:
         sql = issue_sql('edit', ["3"])
 
-    change_tbl(sql, name, belong_id, mail_address, password, filename, management, employee_id)
+    change_tbl(DB_INFO, sql, name, belong_id, mail_address, password, filename, management, employee_id)
 
     session['success'] = create_success_messages('edit')
     session['success_start'] = time.time()
@@ -299,7 +300,7 @@ def change_password():
 
     new_password = create_hash(new_password)
     sql = issue_sql('change_password')
-    change_tbl(sql, new_password, employee_id)
+    change_tbl(DB_INFO, sql, new_password, employee_id)
     session['success'] = create_success_messages('change_password')
     session['success_start'] = time.time()
     return redirect(url_for('edit', employee_id=employee_id))
@@ -312,7 +313,7 @@ def delete(employee_id):
 
     deleted_datetime = datetime.now().strftime('%Y-%m-%d')
     sql = issue_sql('delete')
-    change_tbl(sql, deleted_datetime, employee_id)
+    change_tbl(DB_INFO, sql, deleted_datetime, employee_id)
     return redirect(url_for('list'))
 
 # ログアウト
