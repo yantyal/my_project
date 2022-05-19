@@ -28,8 +28,8 @@
             <path fill-rule="evenodd" d="M6.5 1a.5.5 0 0 0-.5.5v1h4v-1a.5.5 0 0 0-.5-.5h-3ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1H3.042l.846 10.58a1 1 0 0 0 .997.92h6.23a1 1 0 0 0 .997-.92l.846-10.58Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
         </symbol>
     </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" style="display: none;" viewBox="0 0 16 16">
-        <symbol id="check">
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="check" fill="currentColor" viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
             <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
         </symbol>
@@ -85,7 +85,7 @@
     <!-- 認証エラー -->
     <div class="error-wrapper mt-2">
         {% if session['errors'] %}
-            <div class="container p-0">
+            <div class="container p-0 alert-wrapper">
                 <div class="alert alert-danger d-flex align-items-center alert-warning alert-dismissible fade show" role="alert">
                     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="警告：">
                         <use xlink:href="#exclamation-triangle-fill"/>
@@ -96,6 +96,21 @@
                         </div>
                     {% endfor %}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        {% endif %}
+        <!-- 成功文 -->
+        {% if session['success'] %}
+            <div class="container p-0 mt-0 success-wrapper">
+                <div class="alert alert-info d-flex align-items-center alert-dismissible fade show">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+                    <use xlink:href="#check"/></svg>
+                    {% for message in session['success'] %}
+                        <div>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             </div>
         {% endif %}
