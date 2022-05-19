@@ -1,8 +1,8 @@
-from flask import Flask
+from flask import Flask, request, session, has_request_context
 import mysql.connector, json
 from datetime import timedelta
 from werkzeug.utils import secure_filename
-import os, hashlib, time
+import os, hashlib, time, logging
 
 
 def create_app():
@@ -157,3 +157,35 @@ def check_success_in_session(session, meantime):
         if end - session['success_start'] >= meantime:
             session.pop('success', None)
             session.pop('success_start', None)
+
+# ログにIPアドレスと遷移先URLと社員IDを保存できるようにする
+class RequestFormatter(logging.Formatter):
+    employee_id = 'None_in_session'
+    def set_employee_id(self, session):
+        if 'employee_id' in session:
+            self.employee_id = session['employee_id']
+
+    def format(self, record):
+        if has_request_context():
+            record.url = request.url
+            record.remote_addr = request.remote_addr
+            record.employee_id = self.employee_id
+        else:
+            record.url = None
+            record.remote_addr = None
+            record.employee_id = self.employee_id
+
+        return super().format(record)
+
+# ログの保存形式
+formatter = RequestFormatter(
+    '''{
+    "timestamp": "%(asctime)s",
+    "IP": "%(remote_addr)s",
+    "employee_id": "%(employee_id)s",
+    "requested_url": "%(url)s",
+    "level": "%(levelname)s",
+    "module": "%(module)s",
+    "message": "%(message)s"
+},'''
+)
