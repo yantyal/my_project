@@ -319,3 +319,22 @@ def delete(employee_id):
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+# 404エラーハンドラー # 405エラーハンドラー
+@app.errorhandler(404)
+@app.errorhandler(405)
+def page_not_found(error):
+    session['errors'] = create_error_messages('404')
+    session['start'] = time.time()
+    if 'name' not in session:
+        return redirect(url_for('login'))
+    return redirect(url_for('list'))
+
+# 汎用的なエラーハンドラー
+@app.errorhandler(HTTPException)
+def error_handler(error):
+    session['errors'] = create_error_messages('error')
+    session['start'] = time.time()
+    if 'name' not in session:
+        return redirect(url_for('login'))
+    return redirect(url_for('list'))
