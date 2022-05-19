@@ -7,3 +7,4 @@ DB_INFO={
     "passwd": "user21(PASS)",
     "db": "employee",
     "auth_plugin": "mysql_native_password"}
+LOGFILE = "LOGFILE.log"
