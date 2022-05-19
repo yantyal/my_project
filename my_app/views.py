@@ -2,16 +2,25 @@ from flask import render_template, redirect, url_for, make_response
 from flask import request, session
 from werkzeug.exceptions import HTTPException
 from datetime import datetime
-import time, json
+import time, json, logging
 from my_app.models import (check_error_in_session, check_success_in_session, create_app, create_error_messages, create_sql_condition, create_success_messages, create_users,
-issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_hash)
+issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_hash, formatter)
 
 
 app = create_app()
+
 DB_INFO = app.config['DB_INFO']
+LOGFILE = app.config['LOGFILE']
+UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
+
+log_handler = logging.FileHandler(LOGFILE)
+log_handler.setFormatter(formatter)
+app.logger.addHandler(log_handler)
+
 
 @app.route('/')
 def index():
+    app.logger.info('From Index To Login.')
     return redirect(url_for('login'))
 
 # ログイン
@@ -162,7 +171,7 @@ def add():
         if 'file' in request.files:
             file = request.files['file']
         if file.filename != '':
-            filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
+            filename = save_file(file, file.filename, UPLOAD_FOLDER)
         sql = issue_sql('add_check')
         row = select_one(DB_INFO, sql, mail_address, password)
 
@@ -239,7 +248,7 @@ def edit_result():
     if 'file' in request.files:
         file = request.files['file']
     if file.filename != '':
-        filename = save_file(file, file.filename, app.config['UPLOAD_FOLDER'])
+        filename = save_file(file, file.filename, UPLOAD_FOLDER)
     employee_id = request.form['employee_id']
     sql = issue_sql('edit_check')
     row = select_one(DB_INFO, sql, mail_address, password)
@@ -319,6 +328,8 @@ def delete(employee_id):
 # ログアウト
 @app.route('/logout')
 def logout():
+    formatter.set_employee_id(session)
+    app.logger.info('Logout.')
     session.clear()
     return redirect(url_for('login'))
 
