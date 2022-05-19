@@ -94,6 +94,7 @@ def list():
 
     if request.method == 'GET':
         check_error_in_session(session, 0.2)
+        check_success_in_session(session, 1)
         if 'sort' in session:
             if session['sort'] == 'sort':
                 session.pop('sort', None)
@@ -179,6 +180,8 @@ def add():
         sql = issue_sql('add', ["3"])
     change_tbl(sql, name, belong_id, mail_address, password, filename, management)
 
+    session['success'] = create_success_messages('add')
+    session['success_start'] = time.time()
     return redirect(url_for('list'))
 
 # 編集
@@ -262,9 +265,7 @@ def edit_result():
 
     session['success'] = create_success_messages('edit')
     session['success_start'] = time.time()
-    # return redirect(url_for('list'))
-    # TODO 社員一覧リストに成功文を出すか検証
-    return redirect(url_for('edit', employee_id=employee_id))
+    return redirect(url_for('list'))
 
 # パスワード変更
 @app.route('/change/password', methods=['POST'])
