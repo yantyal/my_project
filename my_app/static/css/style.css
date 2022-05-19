@@ -1,4 +1,9 @@
 @charset "UTF-8";
+:root{
+    --body-bg-color: rgba(204, 202, 202, 0.8);
+    --bg-transparent: rgba(0, 0, 0, 0);
+    --container-border: rgb(205, 204, 204);
+}
 a,
 p,
 h3,
@@ -13,90 +18,13 @@ a{
     text-decoration: none;
 }
 body{
-    background-color: rgb(204, 202, 202);
-}
-/* エラー文表示 */
-.alert-wrapper{
-    animation-name: alert-fade;
-    animation-duration: 4s;
-}
-@keyframes alert-fade{
-    0%{
-        opacity: 0;
-    }
-    33%{
-        opacity: 1;
-    }
-    66%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
-}
-/* 成功文表示 */
-.success-wrapper{
-    animation-name: success-fade;
-    animation-duration: 2s;
-}
-@keyframes success-fade{
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
-}
-/* パスワードのマスク表示 */
-.password-position{
-    position: relative;
-}
-.btn-view-password{
-    color: rgb(172, 173, 175);
-}
-.btn-view-password-position{
-    position: absolute;
-    top: 5px;
-    right: 15px;
-    z-index: 2;
-}
-.modal-btn-view-password-position{
-    position: absolute;
-    top: 0px;
-    right: 15px;
-    z-index: 2;
-}
-
-/* ナビゲーションバー */
-.form-wrapper{
-    max-width: 200px;
-}
-.nav-input-radius{
-    border-radius: 18px 0 0 18px;
-}
-.nav-btn-radius{
-    border-radius: 0 18px 18px 0;
-}
-.nav-opacity{
-    max-width: 150px;
-    border-radius: 18px;
-    transition: all 0.5s;
-}
-.nav-opacity:hover{
-    background-color: rgba(255, 255, 255,.5);
+    background-color: var(--body-bg-color);
 }
 
 /* ログイン画面 */
-.error-wrapper{
-    height: 70px;
-}
-.error-wrapper .container{
-    background-color: rgb(204, 202, 202);
-    z-index: 3;
-}
 .container-wrapper{
     max-width: 400px;
-    border: 1px rgb(205, 204, 204) solid;
+    border: 1px var(--container-border) solid;
     margin: auto;
 }
 .container-wrapper a{
@@ -134,13 +62,8 @@ body{
     font-size: 12px;
     color: rgb(134, 135, 136);
 }
-.login-footer .container{
-    background-color: rgb(204, 202, 202);
-}
-
 
 /* リスト */
-
 .table-stripe tr:nth-of-type(2n) {
     background-color: rgba(0,0,0,.05);
 }
@@ -149,7 +72,7 @@ body{
     margin: 0 20px 20px 20px;
 }
 .btn-item{
-    background-color: rgb(0, 0, 0, 0);
+    background-color: var(--bg-transparent);
     border: none;
     z-index: 2;
     transition: all 0.5s;
@@ -168,7 +91,7 @@ body{
 }
 .add-container-wrapper{
     max-width: 400px;
-    border: 1px rgb(205, 204, 204) solid;
+    border: 1px var(--container-border) solid;
     margin: auto;
 }
 .add-container-wrapper a{
@@ -205,7 +128,7 @@ input[type="file"] {
 /* 編集 */
 .edit-container-wrapper{
     max-width: 400px;
-    border: 1px rgb(205, 204, 204) solid;
+    border: 1px var(--container-border) solid;
     margin: auto;
 }
 .edit-container-wrapper a{
@@ -234,9 +157,90 @@ input[type="file"] {
 }
 .modal-btn-toggle{
     font-size: 12px;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: var(--bg-transparent);
     border: none;
 }
 .modal-btn-toggle:hover{
     border-bottom: 1px rgb(87, 87, 88) dotted;
+}
+
+/* アラート */
+.error-wrapper{
+    height: 70px;
+}
+.error-wrapper .container{
+    background-color: var(--body-bg-color);
+    z-index: 3;
+}
+/* エラー文表示 */
+.alert-wrapper{
+    animation-name: alert-fade;
+    animation-duration: 4s;
+}
+@keyframes alert-fade{
+    0%{
+        opacity: 0;
+    }
+    33%{
+        opacity: 1;
+    }
+    66%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+/* 成功文表示 */
+.success-wrapper{
+    animation-name: success-fade;
+    animation-duration: 2s;
+}
+@keyframes success-fade{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+/* パスワードのマスク表示 */
+.password-position{
+    position: relative;
+}
+.btn-view-password{
+    color: rgb(172, 173, 175);
+}
+.btn-view-password-position{
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    z-index: 2;
+}
+.modal-btn-view-password-position{
+    position: absolute;
+    top: 0px;
+    right: 15px;
+    z-index: 2;
+}
+
+/* ナビゲーションバー */
+.form-wrapper{
+    max-width: 200px;
+}
+.nav-input-radius{
+    border-radius: 18px 0 0 18px;
+}
+.nav-btn-radius{
+    border-radius: 0 18px 18px 0;
+}
+.nav-opacity{
+    max-width: 150px;
+    border-radius: 18px;
+    transition: all 0.5s;
+}
+.nav-opacity:hover{
+    background-color: rgba(255, 255, 255,.5);
 }
