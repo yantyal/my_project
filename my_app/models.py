@@ -12,20 +12,20 @@ def create_app():
     return app
 
 
-def connect_db():
+def connect_db(DB_INFO):
     conn = mysql.connector.connect(
-        host = 'localhost',
-        user = 'user21',
-        passwd = 'user21(PASS)',
-        db = 'employee',
-        auth_plugin="mysql_native_password"
+        host = DB_INFO['host'],
+        user = DB_INFO['user'],
+        passwd = DB_INFO['passwd'],
+        db = DB_INFO['db'],
+        auth_plugin = DB_INFO['auth_plugin']
     )
     return conn
 
 # select文を一行返すメソッド
-def select_one(sql, *args):
+def select_one(DB_INFO, sql, *args):
     row = None
-    conn = connect_db()
+    conn = connect_db(DB_INFO)
     cursor = conn.cursor()
     try:
         cursor.execute(sql, [arg for arg in args if arg is not None ])
@@ -38,9 +38,9 @@ def select_one(sql, *args):
     return row
 
 # select文を複数行返すメソッド
-def select_all(sql, *args):
+def select_all(DB_INFO, sql, *args):
     rows = None
-    conn = connect_db()
+    conn = connect_db(DB_INFO)
     cursor = conn.cursor()
     try:
         cursor.execute(sql, [arg for arg in args if arg != ''])
@@ -53,8 +53,8 @@ def select_all(sql, *args):
     return rows
 
 # insert文、delete文、update文を実行するメソッド
-def change_tbl(sql, *args):
-    conn = connect_db()
+def change_tbl(DB_INFO, sql, *args):
+    conn = connect_db(DB_INFO)
     cursor = conn.cursor()
     print([arg for arg in args if arg is not None])
     try:
