@@ -49,10 +49,10 @@
         <!-- /サブコンポーネント -->
     </nav>
     <!-- /ナビゲーションバー -->
-    <!-- 認証エラー -->
+    <!-- 登録エラー -->
     <div class="error-wrapper mt-2">
         {% if session['errors'] %}
-            <div class="container p-0 mt-0">
+            <div class="container p-0 mt-0 alert-wrapper">
                 <div class="alert alert-danger d-flex align-items-center alert-warning alert-dismissible fade show" role="alert">
                     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="警告：">
                         <use xlink:href="#exclamation-triangle-fill"/>
