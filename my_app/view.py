@@ -1,10 +1,8 @@
-from flask import render_template, redirect, url_for, make_response
-from flask import request, session
+from flask import redirect, url_for
+from flask import session
 from werkzeug.exceptions import HTTPException
-from datetime import datetime
 import time, json, logging
-from my_app.models import (check_error_in_session, check_success_in_session, create_app, create_error_messages, create_sql_condition, create_success_messages, create_users,
-issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_hash, formatter)
+from my_app.models import ( create_app, create_error_messages, formatter)
 
 
 app = create_app()
@@ -17,16 +15,6 @@ log_handler = logging.FileHandler(LOGFILE)
 log_handler.setFormatter(formatter)
 app.logger.addHandler(log_handler)
 
-from my_app.views.login import login_bp
-app.register_blueprint(login_bp)
-from my_app.views.list import list_bp
-app.register_blueprint(list_bp)
-from my_app.views.add import add_bp
-app.register_blueprint(add_bp)
-from my_app.views.edit import edit_bp
-app.register_blueprint(edit_bp)
-from my_app.views.delete import delete_bp
-app.register_blueprint(delete_bp)
 
 # インデックス
 @app.route('/')
@@ -52,7 +40,7 @@ def page_not_found(error):
     session['start'] = time.time()
     if 'name' not in session:
         return redirect(url_for('login.login'))
-    return redirect(url_for('list'))
+    return redirect(url_for('list.list'))
 
 
 # 汎用的なエラーハンドラー
@@ -62,4 +50,4 @@ def error_handler(error):
     session['start'] = time.time()
     if 'name' not in session:
         return redirect(url_for('login.login'))
-    return redirect(url_for('list'))
+    return redirect(url_for('list.list'))

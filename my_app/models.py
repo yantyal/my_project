@@ -9,6 +9,17 @@ def create_app():
     app = Flask(__name__, static_folder="static")
     app.config.from_envvar('APPLICATION_SETTINGS')
     app.permanent_session_lifetime = timedelta(minutes=30) # セッションの生存時間は30分
+    # Blueprintの設定
+    from my_app.views.login import login_bp
+    app.register_blueprint(login_bp)
+    from my_app.views.list import list_bp
+    app.register_blueprint(list_bp)
+    from my_app.views.add import add_bp
+    app.register_blueprint(add_bp)
+    from my_app.views.edit import edit_bp
+    app.register_blueprint(edit_bp)
+    from my_app.views.delete import delete_bp
+    app.register_blueprint(delete_bp)
     return app
 
 
