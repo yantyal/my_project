@@ -19,6 +19,8 @@ app.logger.addHandler(log_handler)
 
 from my_app.views.login import login_bp
 app.register_blueprint(login_bp)
+from my_app.views.list import list_bp
+app.register_blueprint(list_bp)
 
 
 @app.route('/')
@@ -26,54 +28,6 @@ def index():
     app.logger.info('From Index To Login.')
     return redirect(url_for('login.login'))
 
-
-# 社員一覧リスト
-@app.route('/user/list', methods=['GET','POST'])
-def list():
-    if 'name' not in session:
-        return redirect(url_for('login.login'))
-
-    if request.method == 'GET':
-        check_error_in_session(session, 0.2)
-        check_success_in_session(session, 1)
-        if 'sort' in session:
-            if session['sort'] == 'sort':
-                session.pop('sort', None)
-                return render_template('list.html')
-        sql = issue_sql('list')
-        rows = select_all(DB_INFO, sql)
-        table = issue_table('list')
-        session["users"] = create_users(table, rows)
-        return render_template('list.html')
-    # 社員の検索時にPOSTで受け取る
-    if request.method == 'POST':
-        sort_employee_id = ''
-        sort_name = ''
-        belong_id = ''
-        if 'sort' in request.form:
-            sort = request.form['sort']
-            if sort == '':
-                return redirect(url_for('list'))
-            sort_employee_id = sort
-            sort_name = '%' + sort + '%'
-        if 'belong_id' in request.form:
-            belong_id = request.form['belong_id']
-        sql_condition = create_sql_condition(sort_employee_id, sort_name, belong_id)
-        sql = issue_sql('sort', sql_condition)
-        rows = select_all(DB_INFO, sql, sort_employee_id, sort_name, belong_id)
-
-    if rows is None:
-        session['errors'] = create_error_messages('sort')
-        session['start'] = time.time()
-    if len(rows) == 0:
-        session['errors'] = create_error_messages('list')
-        session['start'] = time.time()
-
-    table = issue_table('list')
-    session["users"] = create_users(table, rows)
-
-    session['sort'] = 'sort'
-    return redirect(url_for('list'))
 
 # 新規登録
 @app.route('/user/add', methods=['GET', 'POST'])

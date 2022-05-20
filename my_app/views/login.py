@@ -15,7 +15,7 @@ login_bp = Blueprint('login', __name__, url_prefix='/login', template_folder='my
 def login():
     if request.method == 'GET':
         if 'name' in session:
-            return redirect(url_for('list'))
+            return redirect(url_for('list.list'))
 
         user_info = request.cookies.get('user_info')
         if user_info is None:
@@ -42,7 +42,7 @@ def login():
             redirect_number = 1
 
         if redirect_number == 0:
-            return redirect(url_for('list'))
+            return redirect(url_for('list.list'))
         else:
             return render_template('login.html')
 
@@ -76,9 +76,9 @@ def login():
     if check_cookie == 'ok':
         max_age = 30 # クッキーの生存時間は30秒
         expires = int(datetime.now().timestamp()) + max_age
-        response = make_response(redirect(url_for('list')))
+        response = make_response(redirect(url_for('list.list')))
         user_info = {'mail_address': mail_address, 'password': password}
         response.set_cookie("user_info", value=json.dumps(user_info), expires=expires)
         return response
     else:
-        return redirect(url_for('list'))
+        return redirect(url_for('list.list'))

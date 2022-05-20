@@ -40,7 +40,7 @@
         <!-- サブコンポーネント -->
         <div class="container">
             <!-- ブランド -->
-            <a href="{{url_for('list')}}" class="navbar-brand">ユーザー管理システム</a>
+            <a href="{{url_for('list.list')}}" class="navbar-brand">ユーザー管理システム</a>
             <!-- 切り替えボタン -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbar-content">
@@ -52,7 +52,7 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item ms-3 me-md-3 mb-2 mb-md-0">
                         <div class="form-wrapper">
-                            <form action="{{url_for('list')}}" method="POST">
+                            <form action="{{url_for('list.list')}}" method="POST">
                                 <div class="input-group">
                                     <input type="text" name="sort" class="form-control nav-input-radius" placeholder="検索">
                                     <button type="submit" class="input-group-text nav-btn-radius">
@@ -118,7 +118,7 @@
     <main>
         <div class="pb-2">
             <div class="list-container px-3 py-2">
-                <h4 class="m-1"><a href="{{url_for('list')}}" class="text-secondary">社員一覧リスト</a></h4>
+                <h4 class="m-1"><a href="{{url_for('list.list')}}" class="text-secondary">社員一覧リスト</a></h4>
                 <div class="d-flex">
                     <div class="dropdown mx-1 my-2">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -126,61 +126,61 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="1">
                                     <button type="submit" class="dropdown-item">総務課</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="2">
                                     <button type="submit" class="dropdown-item">BS事業部</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="3">
                                     <button type="submit" class="dropdown-item">CS事業部</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="4">
                                     <button type="submit" class="dropdown-item">営業課</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="5">
                                     <button type="submit" class="dropdown-item">システム1課</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="6">
                                     <button type="submit" class="dropdown-item">システム2課</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="7">
                                     <button type="submit" class="dropdown-item">システム3課</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="8">
                                     <button type="submit" class="dropdown-item">システム4課</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="9">
                                     <button type="submit" class="dropdown-item">システム5課</button>
                                 </form>
                             </li>
                             <li>
-                                <form action="{{url_for('list')}}" method="POST">
+                                <form action="{{url_for('list.list')}}" method="POST">
                                     <input type="hidden" name="belong_id" value="0">
                                     <button type="submit" class="dropdown-item">未定</button>
                                 </form>
@@ -197,7 +197,7 @@
                 </div>
                 <div class="table-responsive">
                     <table class="table table-borderless table-hover">
-                        <caption class="text-end"><small><a href="{{url_for('list')}}" class="text-muted">社員一覧リスト</a></small></caption>
+                        <caption class="text-end"><small><a href="{{url_for('list.list')}}" class="text-muted">社員一覧リスト</a></small></caption>
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" class="text-nowrap">社員ID</th>
