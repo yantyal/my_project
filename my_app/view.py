@@ -25,24 +25,15 @@ from my_app.views.add import add_bp
 app.register_blueprint(add_bp)
 from my_app.views.edit import edit_bp
 app.register_blueprint(edit_bp)
+from my_app.views.delete import delete_bp
+app.register_blueprint(delete_bp)
 
-
+# インデックス
 @app.route('/')
 def index():
     app.logger.info('From Index To Login.')
     return redirect(url_for('login.login'))
 
-
-# 削除(実際にはデータは削除しない)
-@app.route('/user/delete/<employee_id>', methods=['POST'])
-def delete(employee_id):
-    if session['management'] != 'Y':
-        return redirect(url_for('list'))
-
-    deleted_datetime = datetime.now().strftime('%Y-%m-%d')
-    sql = issue_sql('delete')
-    change_tbl(DB_INFO, sql, deleted_datetime, employee_id)
-    return redirect(url_for('list'))
 
 # ログアウト
 @app.route('/logout')
@@ -51,6 +42,7 @@ def logout():
     app.logger.info('Logout.')
     session.clear()
     return redirect(url_for('login.login'))
+
 
 # 404エラーハンドラー # 405エラーハンドラー
 @app.errorhandler(404)
@@ -61,6 +53,7 @@ def page_not_found(error):
     if 'name' not in session:
         return redirect(url_for('login.login'))
     return redirect(url_for('list'))
+
 
 # 汎用的なエラーハンドラー
 @app.errorhandler(HTTPException)
