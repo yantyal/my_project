@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for
-from flask import request, session
+from flask import request, session, current_app
 import time
 from my_app.models import (check_error_in_session, create_error_messages, create_success_messages,
 save_file, select_one, change_tbl, issue_sql, create_hash)
-from my_app.view import DB_INFO, UPLOAD_FOLDER
 
 add_bp = Blueprint('add', __name__, url_prefix='/user', template_folder='my_app.templates')
 
@@ -11,6 +10,9 @@ add_bp = Blueprint('add', __name__, url_prefix='/user', template_folder='my_app.
 # 新規登録
 @add_bp.route('/add', methods=['GET', 'POST'])
 def add():
+    DB_INFO = current_app.config['DB_INFO']
+    UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
+
     if 'name' not in session:
         return redirect(url_for('login.login'))
 

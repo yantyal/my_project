@@ -1,18 +1,18 @@
 from flask import render_template, redirect, url_for, make_response
-from flask import request, session
-from werkzeug.exceptions import HTTPException
+from flask import request, session, current_app
 from datetime import datetime
-import time, json, logging
-from my_app.models import (check_error_in_session, check_success_in_session, create_app, create_error_messages, create_sql_condition, create_success_messages, create_users,
-issue_table, save_file, select_one, select_all, change_tbl, issue_sql, create_hash, formatter)
+import time, json
+from my_app.models import (check_error_in_session, create_error_messages,
+issue_table, select_one, issue_sql, create_hash)
 from flask import Blueprint, render_template
-from my_app.view import DB_INFO
 
 login_bp = Blueprint('login', __name__, url_prefix='/login', template_folder='my_app.templates')
 
 # ログイン
 @login_bp.route('/', methods=['GET', 'POST'])
 def login():
+    DB_INFO = current_app.config['DB_INFO']
+
     if request.method == 'GET':
         if 'name' in session:
             return redirect(url_for('list.list'))

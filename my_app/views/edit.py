@@ -1,15 +1,16 @@
 from flask import Blueprint, render_template, redirect, url_for
-from flask import request, session
+from flask import request, session, current_app
 import time
 from my_app.models import (check_error_in_session, check_success_in_session, create_error_messages,
 create_success_messages, save_file, select_one, change_tbl, issue_sql, issue_table, create_hash)
-from my_app.view import DB_INFO, UPLOAD_FOLDER
 
 edit_bp = Blueprint('edit', __name__, url_prefix='/user', template_folder='my_app.templates')
 
 # 編集
 @edit_bp.route('/edit/<employee_id>', methods=['GET', 'POST'])
 def edit(employee_id):
+    DB_INFO = current_app.config['DB_INFO']
+
     if 'name' not in session:
         return redirect(url_for('login.login'))
 
@@ -38,6 +39,9 @@ def edit(employee_id):
 # 編集画面からの更新を受け付ける
 @edit_bp.route('/result', methods=['POST'])
 def edit_result():
+    DB_INFO = current_app.config['DB_INFO']
+    UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
+
     if 'name' not in session:
         return redirect(url_for('login.login'))
 
@@ -93,6 +97,8 @@ def edit_result():
 # パスワード変更
 @edit_bp.route('/change/password', methods=['POST'])
 def change_password():
+    DB_INFO = current_app.config['DB_INFO']
+
     old_password = request.form['old_password']
     new_password = request.form['new_password']
     confirm_password = request.form['confirm_password']

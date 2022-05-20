@@ -1,15 +1,16 @@
 from flask import Blueprint, render_template, redirect, url_for
-from flask import request, session
+from flask import request, session, current_app
 import time
 from my_app.models import (check_error_in_session, check_success_in_session, create_error_messages,
 create_sql_condition, create_users, issue_table, select_all, issue_sql)
-from my_app.view import DB_INFO
 
 list_bp = Blueprint('list', __name__, url_prefix='/user', template_folder='my_app.templates')
 
 # 社員一覧リスト
 @list_bp.route('/list', methods=['GET','POST'])
 def list():
+    DB_INFO = current_app.config['DB_INFO']
+
     if 'name' not in session:
         return redirect(url_for('login.login'))
 
