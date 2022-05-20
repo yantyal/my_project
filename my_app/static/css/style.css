@@ -3,6 +3,8 @@
     --body-bg-color: rgba(204, 202, 202, 0.8);
     --bg-transparent: rgba(0, 0, 0, 0);
     --container-border: rgb(205, 204, 204);
+    --edit-btn-color: rgba(90, 50, 155, 0.9);
+    --delete-btn-color: rgba(199, 99, 99, 0.9);
 }
 a,
 p,
@@ -77,8 +79,11 @@ body{
     z-index: 2;
     transition: all 0.5s;
 }
-.btn-item svg{
-    color: black;
+.edit-btn-color{
+    color: var(--edit-btn-color);
+}
+.delete-btn-color{
+    color: var(--delete-btn-color);
 }
 
 /* 新規登録 */

@@ -1,5 +1,5 @@
-from flask import Flask, request, session, has_request_context
-import mysql.connector, json
+from flask import Flask, request, has_request_context
+import mysql.connector, json, uuid
 from datetime import timedelta
 from werkzeug.utils import secure_filename
 import os, hashlib, time, logging
@@ -9,6 +9,17 @@ def create_app():
     app = Flask(__name__, static_folder="static")
     app.config.from_envvar('APPLICATION_SETTINGS')
     app.permanent_session_lifetime = timedelta(minutes=30) # セッションの生存時間は30分
+    # Blueprintの設定
+    from my_app.views.login import login_bp
+    app.register_blueprint(login_bp)
+    from my_app.views.list import list_bp
+    app.register_blueprint(list_bp)
+    from my_app.views.add import add_bp
+    app.register_blueprint(add_bp)
+    from my_app.views.edit import edit_bp
+    app.register_blueprint(edit_bp)
+    from my_app.views.delete import delete_bp
+    app.register_blueprint(delete_bp)
     return app
 
 
@@ -113,13 +124,21 @@ def allowed_file(filename):
     # OKなら１、だめなら0
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def save_file(file, filename, app_config_UPLOAD_FOLDER):
+# 画像アップロード
+def save_file(file, filename, UPLOAD_FOLDER):
     if file and allowed_file(filename):
         # 危険な文字を削除（サニタイズ処理）
         filename = secure_filename(filename)
+        # ファイルネームを一意のものに変換
+        filename = str(uuid.uuid4()) + '.' + filename.rsplit('.', 1)[1].lower()
         # ファイルの保存
-        file.save(os.path.join(app_config_UPLOAD_FOLDER, filename))
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
     return filename
+
+# 画像削除
+def remove_file(filename):
+    if os.path.exists('./my_app' + filename):
+        os.remove('./my_app' + filename)
 
 def create_hash(password):
     return hashlib.sha256(password.encode("utf-8")).hexdigest()

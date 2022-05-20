@@ -21,7 +21,7 @@
         <!-- サブコンポーネント -->
         <div class="container">
             <!-- ブランド -->
-            <a href="{{url_for('list')}}" class="navbar-brand">ユーザー管理システム</a>
+            <a href="{{url_for('list.list')}}" class="navbar-brand">ユーザー管理システム</a>
             <!-- 切り替えボタン -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbar-content">
@@ -70,7 +70,7 @@
     <div class="pt-0">
         <div class="rounded-3 shadow mb-4 add-container-wrapper">
             <!-- フォーム -->
-            <form action="{{url_for('add')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{url_for('add.add')}}" method="POST" enctype="multipart/form-data">
                 <div class="container p-3 add-container">
                     <!-- タブ型ナビゲーション -->
                     <div class="nav nav-tabs" id="tab-menus">
