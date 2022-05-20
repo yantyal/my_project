@@ -1,4 +1,4 @@
-from flask import Flask, request, session, has_request_context
+from flask import Flask, request, has_request_context
 import mysql.connector, json
 from datetime import timedelta
 from werkzeug.utils import secure_filename

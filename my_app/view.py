@@ -17,90 +17,21 @@ log_handler = logging.FileHandler(LOGFILE)
 log_handler.setFormatter(formatter)
 app.logger.addHandler(log_handler)
 
+from my_app.views.login import login_bp
+app.register_blueprint(login_bp)
+
 
 @app.route('/')
 def index():
     app.logger.info('From Index To Login.')
-    return redirect(url_for('login'))
+    return redirect(url_for('login.login'))
 
-# ログイン
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'GET':
-        if 'name' in session:
-            return redirect(url_for('list'))
-
-        user_info = request.cookies.get('user_info')
-        if user_info is None:
-            check_error_in_session(session, 1)
-            return render_template('login.html')
-
-        # クッキーにユーザー情報があればログイン
-        user_info = json.loads(user_info)
-        mail_address = user_info['mail_address']
-        password = user_info['password']
-        sql = issue_sql('login')
-        row = select_one(DB_INFO, sql, mail_address, password)
-        table = issue_table('login')
-
-        # ログインが拒否された場合はリダイレクト先を変える
-        # 社員一覧リスト(0) ログイン画面(1)
-        redirect_number = 0
-        if row is not None:
-            for t, r in zip(table, row):
-                session[t] = r
-                if t == 'deleted_datetime' and r is not None:
-                    redirect_number = 1
-        else:
-            redirect_number = 1
-
-        if redirect_number == 0:
-            return redirect(url_for('list'))
-        else:
-            return render_template('login.html')
-
-    if request.method == 'POST':
-        mail_address = request.form['mail_address']
-        password = create_hash(request.form['password'])
-        check_cookie = request.form.getlist('check_cookie')
-        if len(check_cookie) != 0:
-            check_cookie = check_cookie[0]
-        sql = issue_sql('login')
-        row = select_one(DB_INFO, sql, mail_address, password)
-        table = issue_table('login')
-
-    # ログインが拒否された場合はリダイレクト先を変える
-    # 社員一覧リスト(0) ログイン画面(1)
-    redirect_number = 0
-    if row is not None:
-        for t, r in zip(table, row):
-            session[t] = r
-            if t == 'deleted_datetime' and r is not None:
-                redirect_number = 1
-    else:
-        redirect_number = 1
-
-    if redirect_number == 1:
-        session.clear()
-        session['errors'] = create_error_messages('login')
-        session['start'] = time.time()
-        return redirect(url_for('login'))
-
-    if check_cookie == 'ok':
-        max_age = 30 # クッキーの生存時間は30秒
-        expires = int(datetime.now().timestamp()) + max_age
-        response = make_response(redirect(url_for('list')))
-        user_info = {'mail_address': mail_address, 'password': password}
-        response.set_cookie("user_info", value=json.dumps(user_info), expires=expires)
-        return response
-    else:
-        return redirect(url_for('list'))
 
 # 社員一覧リスト
 @app.route('/user/list', methods=['GET','POST'])
 def list():
     if 'name' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.login'))
 
     if request.method == 'GET':
         check_error_in_session(session, 0.2)
@@ -148,7 +79,7 @@ def list():
 @app.route('/user/add', methods=['GET', 'POST'])
 def add():
     if 'name' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.login'))
 
     if session['management'] != 'Y':
         return redirect(url_for('list'))
@@ -198,7 +129,7 @@ def add():
 @app.route('/user/edit/<employee_id>', methods=['GET', 'POST'])
 def edit(employee_id):
     if 'name' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.login'))
 
     if str(session['employee_id']) != employee_id and session['management'] != 'Y':
         return redirect(url_for('list'))
@@ -226,7 +157,7 @@ def edit(employee_id):
 @app.route('/user/result', methods=['POST'])
 def edit_result():
     if 'name' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.login'))
 
     if str(session['employee_id']) != str(session['user']['employee_id']) and session['management'] != 'Y':
         return redirect(url_for('list'))
@@ -331,7 +262,7 @@ def logout():
     formatter.set_employee_id(session)
     app.logger.info('Logout.')
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('login.login'))
 
 # 404エラーハンドラー # 405エラーハンドラー
 @app.errorhandler(404)
@@ -340,7 +271,7 @@ def page_not_found(error):
     session['errors'] = create_error_messages('404')
     session['start'] = time.time()
     if 'name' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.login'))
     return redirect(url_for('list'))
 
 # 汎用的なエラーハンドラー
@@ -349,5 +280,5 @@ def error_handler(error):
     session['errors'] = create_error_messages('error')
     session['start'] = time.time()
     if 'name' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.login'))
     return redirect(url_for('list'))
