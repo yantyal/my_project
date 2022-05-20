@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
 import time
 from my_app.models import (check_error_in_session, check_success_in_session, create_error_messages,
-create_success_messages, save_file, select_one, change_tbl, issue_sql, issue_table, create_hash)
+create_success_messages, save_file, select_one, change_tbl, issue_sql, issue_table, create_hash,
+remove_file)
 
 edit_bp = Blueprint('edit', __name__, url_prefix='/user', template_folder='my_app.templates')
 
@@ -66,6 +67,9 @@ def edit_result():
         file = request.files['file']
     if file.filename != '':
         filename = save_file(file, file.filename, UPLOAD_FOLDER)
+    # 画像更新の際、以前のファイルを削除する
+    if session['user']['image_file_path'] != '':
+        remove_file(session['user']['image_file_path'])
     employee_id = request.form['employee_id']
     sql = issue_sql('edit_check')
     row = select_one(DB_INFO, sql, mail_address, password)
