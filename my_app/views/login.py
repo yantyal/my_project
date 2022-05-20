@@ -29,6 +29,7 @@ def login():
         sql = issue_sql('login')
         row = select_one(DB_INFO, sql, mail_address, password)
         table = issue_table('login')
+        current_app.logger.info(sql)
 
         # ログインが拒否された場合はリダイレクト先を変える
         # 社員一覧リスト(0) ログイン画面(1)
@@ -55,6 +56,7 @@ def login():
         sql = issue_sql('login')
         row = select_one(DB_INFO, sql, mail_address, password)
         table = issue_table('login')
+        current_app.logger.info(sql)
 
     # ログインが拒否された場合はリダイレクト先を変える
     # 社員一覧リスト(0) ログイン画面(1)
@@ -71,7 +73,8 @@ def login():
         session.clear()
         session['errors'] = create_error_messages('login')
         session['start'] = time.time()
-        return redirect(url_for('login'))
+        current_app.logger.info(session['errors'])
+        return redirect(url_for('login.login'))
 
     if check_cookie == 'ok':
         max_age = 30 # クッキーの生存時間は30秒
