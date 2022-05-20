@@ -3,7 +3,7 @@ from flask import request, session, current_app
 import time
 from my_app.models import (check_error_in_session, check_success_in_session, create_error_messages,
 create_success_messages, save_file, select_one, change_tbl, issue_sql, issue_table, create_hash,
-remove_file)
+remove_file, formatter)
 
 edit_bp = Blueprint('edit', __name__, url_prefix='/user', template_folder='my_app.templates')
 
@@ -24,6 +24,8 @@ def edit(employee_id):
     sql = issue_sql('edit_user_info')
     row = select_one(DB_INFO, sql, employee_id)
     table = issue_table('edit')
+    formatter.set_employee_id(session)
+    current_app.logger.info(sql)
     user = {}
     if row is not None:
         for t, r in zip(table, row):
@@ -81,6 +83,8 @@ def edit_result():
     if row is not None and row != employee_id:
         session['errors'] = create_error_messages('edit')
         session['start'] = time.time()
+        formatter.set_employee_id(session)
+        current_app.logger.info(session['errors'])
         return redirect(url_for('edit.edit', employee_id=employee_id))
 
     if not filename and  management != 'Y':
@@ -92,10 +96,14 @@ def edit_result():
     else:
         sql = issue_sql('edit', ["3"])
 
+    formatter.set_employee_id(session)
+    current_app.logger.info(sql)
     change_tbl(DB_INFO, sql, name, belong_id, mail_address, password, filename, management, employee_id)
 
     session['success'] = create_success_messages('edit')
     session['success_start'] = time.time()
+    formatter.set_employee_id(session)
+    current_app.logger.info(session['success'])
     return redirect(url_for('list.list'))
 
 # パスワード変更
@@ -123,16 +131,24 @@ def change_password():
     if new_password != confirm_password:
         session['errors'] = create_error_messages('change_password_new_confirm')
         session['start'] = time.time()
+        formatter.set_employee_id(session)
+        current_app.logger.info(session['errors'])
         return redirect(url_for('edit.edit', employee_id=employee_id))
 
     if create_hash(old_password) != session['user']['password']:
         session['errors'] = create_error_messages('change_password_old')
         session['start'] = time.time()
+        formatter.set_employee_id(session)
+        current_app.logger.info(session['errors'])
         return redirect(url_for('edit.edit', employee_id=employee_id))
 
     new_password = create_hash(new_password)
     sql = issue_sql('change_password')
+    formatter.set_employee_id(session)
+    current_app.logger.info(sql)
     change_tbl(DB_INFO, sql, new_password, employee_id)
     session['success'] = create_success_messages('change_password')
     session['success_start'] = time.time()
+    formatter.set_employee_id(session)
+    current_app.logger.info(session['success'])
     return redirect(url_for('edit.edit', employee_id=employee_id))
