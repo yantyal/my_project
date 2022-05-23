@@ -213,3 +213,12 @@ formatter = RequestFormatter(
     "message": "%(message)s"
 },'''
 )
+
+# セッションにエラー文か成功文のメッセージを登録する
+def register_messages_in_session(session, errors_or_success, message_type):
+    if errors_or_success == 'errors':
+        session['errors'] = create_error_messages(message_type)
+        session['start'] = time.time()
+    if errors_or_success == 'success':
+        session['success'] = create_success_messages(message_type)
+        session['success_start'] = time.time()
