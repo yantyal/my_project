@@ -6,13 +6,18 @@ save_file, select_one, change_tbl, issue_sql, issue_table, create_hash, remove_f
 
 edit_bp = Blueprint('edit', __name__, url_prefix='/user', template_folder='my_app.templates')
 
+
+# 編集前処理
+@edit_bp.before_request
+def user_load():
+    if Login_user_info.name.value not in session:
+        return redirect(url_for('login.login'))
+
+
 # 編集
 @edit_bp.route('/edit/<employee_id>', methods=['GET', 'POST'])
 def edit(employee_id):
     DB_INFO = current_app.config['DB_INFO']
-
-    if Login_user_info.name.value not in session:
-        return redirect(url_for('login.login'))
 
     if str(session[Login_user_info.employee_id.value]) != employee_id and session[Login_user_info.management.value] != 'Y':
         return redirect(url_for('list.list'))
@@ -43,9 +48,6 @@ def edit(employee_id):
 def edit_result():
     DB_INFO = current_app.config['DB_INFO']
     UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
-
-    if Login_user_info.name.value not in session:
-        return redirect(url_for('login.login'))
 
     if str(session[Login_user_info.employee_id.value]) != str(session['user']['employee_id']) and session[Login_user_info.management.value] != 'Y':
         return redirect(url_for('list.list'))

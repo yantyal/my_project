@@ -1,6 +1,6 @@
 from flask import redirect, url_for
 from flask import session
-from my_app.models import ( create_app, formatter)
+from my_app.models import (Login_user_info, create_app, formatter)
 import logging
 
 

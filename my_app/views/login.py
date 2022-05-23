@@ -8,15 +8,20 @@ from flask import Blueprint, render_template
 
 login_bp = Blueprint('login', __name__, url_prefix='/login', template_folder='my_app.templates')
 
+# ログイン前処理
+@login_bp.before_request
+def user_load():
+    if request.method == 'GET':
+        if Login_user_info.name.value in session:
+            return redirect(url_for('list.list'))
+
+
 # ログイン
 @login_bp.route('/', methods=['GET', 'POST'])
 def login():
     DB_INFO = current_app.config['DB_INFO']
 
     if request.method == 'GET':
-        if Login_user_info.name.value in session:
-            return redirect(url_for('list.list'))
-
         user_info = request.cookies.get('user_info')
         if user_info is None:
             check_error_in_session(session)

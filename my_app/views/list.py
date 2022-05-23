@@ -6,13 +6,16 @@ issue_sql, formatter)
 
 list_bp = Blueprint('list', __name__, url_prefix='/user', template_folder='my_app.templates')
 
+# 社員一覧リスト前処理
+@list_bp.before_request
+def user_load():
+    if Login_user_info.name.value not in session:
+        return redirect(url_for('login.login'))
+
 # 社員一覧リスト
 @list_bp.route('/list', methods=['GET','POST'])
 def list():
     DB_INFO = current_app.config['DB_INFO']
-
-    if Login_user_info.name.value not in session:
-        return redirect(url_for('login.login'))
 
     if request.method == 'GET':
         check_error_in_session(session, 0.2)
