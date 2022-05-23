@@ -8,113 +8,20 @@
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename = 'img/favicon.png')}}" />
     <title>ユーザー管理システム</title>
 </head>
 
 <body>
     <!-- 使いまわしアイコンを定義しておく -->
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-        </symbol>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-        <symbol id="edit" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-        </symbol>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-        <symbol id="delete" fill="currentColor" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M6.5 1a.5.5 0 0 0-.5.5v1h4v-1a.5.5 0 0 0-.5-.5h-3ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1H3.042l.846 10.58a1 1 0 0 0 .997.92h6.23a1 1 0 0 0 .997-.92l.846-10.58Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
-        </symbol>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-        <symbol id="check" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-            <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
-        </symbol>
-    </svg>
+    {% include "svg.html" %}
 
     <!-- ナビゲーションバー -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
-        <!-- サブコンポーネント -->
-        <div class="container">
-            <!-- ブランド -->
-            <a href="{{url_for('list.list')}}" class="navbar-brand">ユーザー管理システム</a>
-            <!-- 切り替えボタン -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbar-content">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!-- ナビゲーション -->
-            <div class="collapse navbar-collapse" id="navbar-content">
-                <!-- ナビゲーションメニュー -->
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item ms-3 me-md-3 mb-2 mb-md-0">
-                        <div class="form-wrapper">
-                            <form action="{{url_for('list.list')}}" method="POST">
-                                <div class="input-group">
-                                    <input type="text" name="sort" class="form-control nav-input-radius" placeholder="検索">
-                                    <button type="submit" class="input-group-text nav-btn-radius">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </li>
-                    <li class="nav-item ps-2 px-md-2">
-                        <a href="/user/edit/{{session['employee_id']}}" class="nav-link text-white text-nowrap text-truncate px-3 px-sm-0 px-md-1 nav-opacity">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill mb-1" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                            </svg>
-                            {{ session['name'] }}
-                        </a>
-                    </li>
-                    <li class="nav-item ps-2 px-md-2">
-                        <a href="{{url_for('logout')}}" class="nav-link text-white px-3 px-sm-0 px-md-1 nav-opacity">ログアウト</a>
-                    </li>
-                </ul>
-                <!-- ナビゲーションメニュー -->
-            </div>
-        </div>
-        <!-- /サブコンポーネント -->
-    </nav>
-    <!-- /ナビゲーションバー -->
-    <!-- 認証エラー -->
-    <div class="error-wrapper mt-2">
-        {% if session['errors'] %}
-            <div class="container p-0 alert-wrapper">
-                <div class="alert alert-danger d-flex align-items-center alert-warning alert-dismissible fade show" role="alert">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="警告：">
-                        <use xlink:href="#exclamation-triangle-fill"/>
-                    </svg>
-                    {% for message in session['errors'] %}
-                        <div>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        {% endif %}
-        <!-- 成功文 -->
-        {% if session['success'] %}
-            <div class="container p-0 mt-0 success-wrapper">
-                <div class="alert alert-info d-flex align-items-center alert-dismissible fade show">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24">
-                    <use xlink:href="#check"/></svg>
-                    {% for message in session['success'] %}
-                        <div>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+    {% include "nav.html" %}
+
+    <!-- アラート -->
+    {% include "alert.html" %}
+
     <main>
         <div class="pb-2">
             <div class="list-container px-3 py-2">
@@ -311,13 +218,7 @@
         </div>
     </main>
     <!-- フッター -->
-    <div class="login-footer">
-        <div class="container text-center">
-            <p>
-                <small>&copy;2022, ALL Rights Reserved.</small>
-            </p>
-        </div>
-    </div>
+    {% include "footer.html" %}
     <script src="{{url_for('static', filename = 'js/password_mask.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/confirm.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/bootstrap.bundle.min.js')}}"></script>

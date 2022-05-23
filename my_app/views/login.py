@@ -1,12 +1,20 @@
 from flask import render_template, redirect, url_for, make_response
 from flask import request, session, current_app
 from datetime import datetime
-import time, json
-from my_app.models import (check_error_in_session, create_error_messages,
-issue_table, select_one, issue_sql, create_hash)
+import json
+from my_app.models import (Login_user_info, check_error_in_session,issue_table,
+register_messages_in_session, select_one, issue_sql, create_hash)
 from flask import Blueprint, render_template
 
 login_bp = Blueprint('login', __name__, url_prefix='/login', template_folder='my_app.templates')
+
+# ログイン前処理
+@login_bp.before_request
+def user_load():
+    if request.method == 'GET':
+        if Login_user_info.name.value in session:
+            return redirect(url_for('list.list'))
+
 
 # ログイン
 @login_bp.route('/', methods=['GET', 'POST'])
@@ -14,12 +22,9 @@ def login():
     DB_INFO = current_app.config['DB_INFO']
 
     if request.method == 'GET':
-        if 'name' in session:
-            return redirect(url_for('list.list'))
-
         user_info = request.cookies.get('user_info')
         if user_info is None:
-            check_error_in_session(session, 1)
+            check_error_in_session(session)
             return render_template('login.html')
 
         # クッキーにユーザー情報があればログイン
@@ -71,8 +76,7 @@ def login():
 
     if redirect_number == 1:
         session.clear()
-        session['errors'] = create_error_messages('login')
-        session['start'] = time.time()
+        register_messages_in_session(session, 'errors', 'login')
         current_app.logger.info(session['errors'])
         return redirect(url_for('login.login'))
 

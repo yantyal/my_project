@@ -1,7 +1,9 @@
 from flask import Flask, request, has_request_context
-import mysql.connector, json, uuid
+from werkzeug.exceptions import HTTPException
 from datetime import timedelta
 from werkzeug.utils import secure_filename
+from enum import Enum
+import mysql.connector, json, uuid
 import os, hashlib, time, logging
 
 
@@ -20,6 +22,10 @@ def create_app():
     app.register_blueprint(edit_bp)
     from my_app.views.delete import delete_bp
     app.register_blueprint(delete_bp)
+    from my_app.views import error_handler
+    app.register_error_handler(404, error_handler.page_not_found)
+    app.register_error_handler(405, error_handler.page_not_found)
+    app.register_error_handler(HTTPException, error_handler.error_handler)
     return app
 
 
@@ -153,7 +159,7 @@ def create_users(table, rows):
     return users
 
 # meantimeはセッションに残すエラー文の生存時間
-def check_error_in_session(session, meantime):
+def check_error_in_session(session, meantime = 1):
     end = time.time()
     if 'start' in session:
         if end - session['start'] >= meantime:
@@ -170,7 +176,7 @@ def create_success_messages(success_name):
     return messages
 
 # meantimeはセッションに残す成功文の生存時間
-def check_success_in_session(session, meantime):
+def check_success_in_session(session, meantime = 1):
     end = time.time()
     if 'success_start' in session:
         if end - session['success_start'] >= meantime:
@@ -208,3 +214,26 @@ formatter = RequestFormatter(
     "message": "%(message)s"
 },'''
 )
+
+# セッションにエラー文か成功文のメッセージを登録する
+def register_messages_in_session(session, errors_or_success, message_type):
+    if errors_or_success == 'errors':
+        session['errors'] = create_error_messages(message_type)
+        session['start'] = time.time()
+    if errors_or_success == 'success':
+        session['success'] = create_success_messages(message_type)
+        session['success_start'] = time.time()
+
+# 新規登録時の条件分岐をクラスで定義しておく
+class Add_sql_condition(Enum):
+    not_exist_filename_and_management = '0'
+    exist_management = '1'
+    exist_filename = '2'
+    exist_filename_and_management = '3'
+
+# ログイン時にセッションに残すユーザー情報を定義しておく
+class Login_user_info(Enum):
+    employee_id = 'employee_id'
+    name = 'name'
+    deleted_datetime = 'deleted_datetime'
+    management = 'management'
