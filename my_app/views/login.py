@@ -3,7 +3,7 @@ from flask import request, session, current_app
 from datetime import datetime
 import time, json
 from my_app.models import (check_error_in_session, create_error_messages,
-issue_table, select_one, issue_sql, create_hash)
+issue_table, register_messages_in_session, select_one, issue_sql, create_hash)
 from flask import Blueprint, render_template
 
 login_bp = Blueprint('login', __name__, url_prefix='/login', template_folder='my_app.templates')
@@ -71,8 +71,7 @@ def login():
 
     if redirect_number == 1:
         session.clear()
-        session['errors'] = create_error_messages('login')
-        session['start'] = time.time()
+        register_messages_in_session(session, 'errors', 'login')
         current_app.logger.info(session['errors'])
         return redirect(url_for('login.login'))
 

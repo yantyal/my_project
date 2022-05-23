@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
 import time
-from my_app.models import (check_error_in_session, create_error_messages, create_success_messages,
+from my_app.models import (check_error_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, create_hash, formatter)
 
 add_bp = Blueprint('add', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -44,8 +44,7 @@ def add():
         current_app.logger.info(sql)
 
     if row is not None:
-        session['errors'] = create_error_messages('add')
-        session['start'] = time.time()
+        register_messages_in_session(session, 'errors', 'add')
         formatter.set_employee_id(session)
         current_app.logger.info(session['errors'])
         return redirect(url_for('add.add'))
@@ -60,8 +59,7 @@ def add():
         sql = issue_sql('add', ["3"])
     change_tbl(DB_INFO, sql, name, belong_id, mail_address, password, filename, management)
 
-    session['success'] = create_success_messages('add')
-    session['success_start'] = time.time()
+    register_messages_in_session(session, 'success', 'add')
     formatter.set_employee_id(session)
     current_app.logger.info(session['errors'])
     return redirect(url_for('list.list'))

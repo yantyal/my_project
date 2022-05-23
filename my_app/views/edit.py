@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
 import time
-from my_app.models import (check_error_in_session, check_success_in_session, create_error_messages,
-create_success_messages, save_file, select_one, change_tbl, issue_sql, issue_table, create_hash,
-remove_file, formatter)
+from my_app.models import (check_error_in_session, check_success_in_session, register_messages_in_session,
+save_file, select_one, change_tbl, issue_sql, issue_table, create_hash, remove_file, formatter)
 
 edit_bp = Blueprint('edit', __name__, url_prefix='/user', template_folder='my_app.templates')
 
@@ -81,8 +80,7 @@ def edit_result():
     # メールアドレスとパスワードの重複登録は許さないが、
     # 同一ユーザーなら許可(employee_idで検査)
     if row is not None and row != employee_id:
-        session['errors'] = create_error_messages('edit')
-        session['start'] = time.time()
+        register_messages_in_session(session, 'errors', 'edit')
         formatter.set_employee_id(session)
         current_app.logger.info(session['errors'])
         return redirect(url_for('edit.edit', employee_id=employee_id))
@@ -100,8 +98,7 @@ def edit_result():
     current_app.logger.info(sql)
     change_tbl(DB_INFO, sql, name, belong_id, mail_address, password, filename, management, employee_id)
 
-    session['success'] = create_success_messages('edit')
-    session['success_start'] = time.time()
+    register_messages_in_session(session, 'success', 'edit')
     formatter.set_employee_id(session)
     current_app.logger.info(session['success'])
     return redirect(url_for('list.list'))
@@ -119,25 +116,17 @@ def change_password():
     if str(session['employee_id']) != employee_id and session['management'] != 'Y':
         return redirect(url_for('list.list'))
 
-    if old_password == "":
-        return redirect(url_for('list.list'))
-    if new_password == "":
-        return redirect(url_for('list.list'))
-    if confirm_password == "":
-        return redirect(url_for('list.list'))
-    if employee_id == "":
+    if old_password == "" or new_password == "" or confirm_password == "" or employee_id == "":
         return redirect(url_for('list.list'))
 
     if new_password != confirm_password:
-        session['errors'] = create_error_messages('change_password_new_confirm')
-        session['start'] = time.time()
+        register_messages_in_session(session, 'errors', 'change_password_new_confirm')
         formatter.set_employee_id(session)
         current_app.logger.info(session['errors'])
         return redirect(url_for('edit.edit', employee_id=employee_id))
 
     if create_hash(old_password) != session['user']['password']:
-        session['errors'] = create_error_messages('change_password_old')
-        session['start'] = time.time()
+        register_messages_in_session(session, 'errors', 'change_password_old')
         formatter.set_employee_id(session)
         current_app.logger.info(session['errors'])
         return redirect(url_for('edit.edit', employee_id=employee_id))
@@ -147,8 +136,7 @@ def change_password():
     formatter.set_employee_id(session)
     current_app.logger.info(sql)
     change_tbl(DB_INFO, sql, new_password, employee_id)
-    session['success'] = create_success_messages('change_password')
-    session['success_start'] = time.time()
+    register_messages_in_session(session, 'success', 'change_password')
     formatter.set_employee_id(session)
     current_app.logger.info(session['success'])
     return redirect(url_for('edit.edit', employee_id=employee_id))

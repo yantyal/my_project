@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
 import time
 from my_app.models import (check_error_in_session, check_success_in_session, create_error_messages,
-create_sql_condition, create_users, issue_table, select_all, issue_sql, formatter)
+create_sql_condition, create_users, issue_table, register_messages_in_session, select_all, issue_sql, formatter)
 
 list_bp = Blueprint('list', __name__, url_prefix='/user', template_folder='my_app.templates')
 
@@ -48,14 +48,12 @@ def list():
         current_app.logger.info(sql)
 
     if rows is None:
-        session['errors'] = create_error_messages('sort')
-        session['start'] = time.time()
+        register_messages_in_session(session, 'errors', 'sort')
         formatter.set_employee_id(session)
         current_app.logger.info('Logout.')
         return redirect(url_for('list.list'))
     if len(rows) == 0:
-        session['errors'] = create_error_messages('list')
-        session['start'] = time.time()
+        register_messages_in_session(session, 'errors', 'list')
         formatter.set_employee_id(session)
         current_app.logger.info('Logout.')
         return redirect(url_for('list.list'))
