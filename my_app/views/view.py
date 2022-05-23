@@ -1,8 +1,7 @@
 from flask import redirect, url_for
 from flask import session
-from werkzeug.exceptions import HTTPException
-import time, logging
-from my_app.models import ( create_app, create_error_messages, formatter)
+from my_app.models import ( create_app, formatter)
+import logging
 
 
 app = create_app()

@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-import time
-from my_app.models import (check_error_in_session, check_success_in_session, create_error_messages,
-create_sql_condition, create_users, issue_table, register_messages_in_session, select_all, issue_sql, formatter)
+from my_app.models import (Login_user_info, check_error_in_session, check_success_in_session,
+create_sql_condition, create_users, issue_table, register_messages_in_session, select_all,
+issue_sql, formatter)
 
 list_bp = Blueprint('list', __name__, url_prefix='/user', template_folder='my_app.templates')
 
@@ -11,7 +11,7 @@ list_bp = Blueprint('list', __name__, url_prefix='/user', template_folder='my_ap
 def list():
     DB_INFO = current_app.config['DB_INFO']
 
-    if 'name' not in session:
+    if Login_user_info.name.value not in session:
         return redirect(url_for('login.login'))
 
     if request.method == 'GET':

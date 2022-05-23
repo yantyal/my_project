@@ -230,3 +230,10 @@ class Add_sql_condition(Enum):
     exist_management = '1'
     exist_filename = '2'
     exist_filename_and_management = '3'
+
+# ログイン時にセッションに残すユーザー情報を定義しておく
+class Login_user_info(Enum):
+    employee_id = 'employee_id'
+    name = 'name'
+    deleted_datetime = 'deleted_datetime'
+    management = 'management'

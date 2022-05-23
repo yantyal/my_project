@@ -1,9 +1,9 @@
 from flask import render_template, redirect, url_for, make_response
 from flask import request, session, current_app
 from datetime import datetime
-import time, json
-from my_app.models import (check_error_in_session, create_error_messages,
-issue_table, register_messages_in_session, select_one, issue_sql, create_hash)
+import json
+from my_app.models import (Login_user_info, check_error_in_session,issue_table,
+register_messages_in_session, select_one, issue_sql, create_hash)
 from flask import Blueprint, render_template
 
 login_bp = Blueprint('login', __name__, url_prefix='/login', template_folder='my_app.templates')
@@ -14,7 +14,7 @@ def login():
     DB_INFO = current_app.config['DB_INFO']
 
     if request.method == 'GET':
-        if 'name' in session:
+        if Login_user_info.name.value in session:
             return redirect(url_for('list.list'))
 
         user_info = request.cookies.get('user_info')

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
 import time
-from my_app.models import (Add_sql_condition, check_error_in_session, register_messages_in_session,
+from my_app.models import (Add_sql_condition, Login_user_info, check_error_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, create_hash, formatter)
 
 add_bp = Blueprint('add', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -13,10 +13,10 @@ def add():
     DB_INFO = current_app.config['DB_INFO']
     UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
 
-    if 'name' not in session:
+    if Login_user_info.name.value not in session:
         return redirect(url_for('login.login'))
 
-    if session['management'] != 'Y':
+    if session[Login_user_info.management.value] != 'Y':
         return redirect(url_for('list.list'))
 
     if request.method == 'GET':
