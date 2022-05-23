@@ -153,7 +153,7 @@ def create_users(table, rows):
     return users
 
 # meantimeはセッションに残すエラー文の生存時間
-def check_error_in_session(session, meantime):
+def check_error_in_session(session, meantime = 1):
     end = time.time()
     if 'start' in session:
         if end - session['start'] >= meantime:
@@ -170,7 +170,7 @@ def create_success_messages(success_name):
     return messages
 
 # meantimeはセッションに残す成功文の生存時間
-def check_success_in_session(session, meantime):
+def check_success_in_session(session, meantime = 1):
     end = time.time()
     if 'success_start' in session:
         if end - session['success_start'] >= meantime:
