@@ -1,4 +1,5 @@
 from flask import Flask, request, has_request_context
+from werkzeug.exceptions import HTTPException
 import mysql.connector, json, uuid
 from datetime import timedelta
 from werkzeug.utils import secure_filename
@@ -20,6 +21,10 @@ def create_app():
     app.register_blueprint(edit_bp)
     from my_app.views.delete import delete_bp
     app.register_blueprint(delete_bp)
+    from my_app.views import error_handler
+    app.register_error_handler(404, error_handler.page_not_found)
+    app.register_error_handler(405, error_handler.page_not_found)
+    app.register_error_handler(HTTPException, error_handler.error_handler)
     return app
 
 

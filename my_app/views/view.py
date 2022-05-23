@@ -30,28 +30,3 @@ def logout():
     app.logger.info('Logout.')
     session.clear()
     return redirect(url_for('login.login'))
-
-
-# 404エラーハンドラー # 405エラーハンドラー
-@app.errorhandler(404)
-@app.errorhandler(405)
-def page_not_found(error):
-    session['errors'] = create_error_messages('404')
-    session['start'] = time.time()
-    formatter.set_employee_id(session)
-    app.logger.info(session['errors'])
-    if 'name' not in session:
-        return redirect(url_for('login.login'))
-    return redirect(url_for('list.list'))
-
-
-# 汎用的なエラーハンドラー
-@app.errorhandler(HTTPException)
-def error_handler(error):
-    session['errors'] = create_error_messages('error')
-    session['start'] = time.time()
-    formatter.set_employee_id(session)
-    app.logger.info(session['errors'])
-    if 'name' not in session:
-        return redirect(url_for('login.login'))
-    return redirect(url_for('list.list'))
