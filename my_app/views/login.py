@@ -19,7 +19,7 @@ def login():
 
         user_info = request.cookies.get('user_info')
         if user_info is None:
-            check_error_in_session(session, 1)
+            check_error_in_session(session)
             return render_template('login.html')
 
         # クッキーにユーザー情報があればログイン

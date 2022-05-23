@@ -16,7 +16,7 @@ def list():
 
     if request.method == 'GET':
         check_error_in_session(session, 0.2)
-        check_success_in_session(session, 1)
+        check_success_in_session(session)
         if 'sort' in session:
             if session['sort'] == 'sort':
                 session.pop('sort', None)

@@ -20,7 +20,7 @@ def add():
         return redirect(url_for('list.list'))
 
     if request.method == 'GET':
-        check_error_in_session(session, 1)
+        check_error_in_session(session)
         return render_template('add.html')
     # 新規登録時にPOSTで受け取る
     if request.method == 'POST':

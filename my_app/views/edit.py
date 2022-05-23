@@ -18,8 +18,8 @@ def edit(employee_id):
     if str(session['employee_id']) != employee_id and session['management'] != 'Y':
         return redirect(url_for('list.list'))
 
-    check_error_in_session(session, 1)
-    check_success_in_session(session, 1)
+    check_error_in_session(session)
+    check_success_in_session(session)
 
     sql = issue_sql('edit_user_info')
     row = select_one(DB_INFO, sql, employee_id)
