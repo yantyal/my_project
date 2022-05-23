@@ -14,24 +14,9 @@
     <!-- 使いまわしアイコンを定義しておく -->
     {% include "svg.html" %}
 
-    <!-- 認証エラー -->
-    <div class="error-wrapper mt-3">
-        {% if session['errors'] %}
-            <div class="container p-0 mt-0 alert-wrapper">
-                <div class="alert alert-danger d-flex align-items-center alert-warning alert-dismissible fade show" role="alert">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="警告：">
-                        <use xlink:href="#exclamation-triangle-fill"/>
-                    </svg>
-                    {% for message in session['errors'] %}
-                        <div>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+    <!-- アラート -->
+    {% include "alert.html" %}
+
     <!-- フォーム -->
     <div class="pt-0">
         <div class="rounded-3 shadow mb-4 container-wrapper">

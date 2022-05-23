@@ -19,39 +19,9 @@
     <!-- ナビゲーションバー -->
     {% include "nav.html" %}
 
-    <!-- 認証エラー -->
-    <div class="error-wrapper mt-2">
-        {% if session['errors'] %}
-            <div class="container p-0 alert-wrapper">
-                <div class="alert alert-danger d-flex align-items-center alert-warning alert-dismissible fade show" role="alert">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="警告：">
-                        <use xlink:href="#exclamation-triangle-fill"/>
-                    </svg>
-                    {% for message in session['errors'] %}
-                        <div>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        {% endif %}
-        <!-- 成功文 -->
-        {% if session['success'] %}
-            <div class="container p-0 mt-0 success-wrapper">
-                <div class="alert alert-info d-flex align-items-center alert-dismissible fade show">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24">
-                    <use xlink:href="#check"/></svg>
-                    {% for message in session['success'] %}
-                        <div>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+    <!-- アラート -->
+    {% include "alert.html" %}
+
     <main>
         <div class="pb-2">
             <div class="list-container px-3 py-2">
