@@ -1,14 +1,12 @@
 from flask import redirect, url_for
 from flask import session
-from my_app.models import (Login_user_info, create_app, formatter)
+from my_app.models import (create_app, formatter)
 import logging
 
 
 app = create_app()
 
-DB_INFO = app.config['DB_INFO']
 LOGFILE = app.config['LOGFILE']
-UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 
 log_handler = logging.FileHandler(LOGFILE, encoding='utf-8')
 log_handler.setFormatter(formatter)
