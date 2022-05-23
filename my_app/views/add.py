@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
 import time
-from my_app.models import (check_error_in_session, register_messages_in_session,
+from my_app.models import (Add_sql_condition, check_error_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, create_hash, formatter)
 
 add_bp = Blueprint('add', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -50,16 +50,16 @@ def add():
         return redirect(url_for('add.add'))
 
     if not filename and  management != 'Y':
-        sql = issue_sql('add', ["0"])
+        sql = issue_sql('add', Add_sql_condition.not_exist_filename_and_management.value)
     elif not filename and management == 'Y':
-        sql = issue_sql('add', ["1"])
+        sql = issue_sql('add', Add_sql_condition.exist_management.value)
     elif filename and management != 'Y':
-        sql = issue_sql('add', ["2"])
+        sql = issue_sql('add', Add_sql_condition.exist_filename.value)
     else:
-        sql = issue_sql('add', ["3"])
+        sql = issue_sql('add', Add_sql_condition.exist_filename_and_management.value)
     change_tbl(DB_INFO, sql, name, belong_id, mail_address, password, filename, management)
 
     register_messages_in_session(session, 'success', 'add')
     formatter.set_employee_id(session)
-    current_app.logger.info(session['errors'])
+    current_app.logger.info(session['success'])
     return redirect(url_for('list.list'))

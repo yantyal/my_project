@@ -1,8 +1,9 @@
 from flask import Flask, request, has_request_context
 from werkzeug.exceptions import HTTPException
-import mysql.connector, json, uuid
 from datetime import timedelta
 from werkzeug.utils import secure_filename
+from enum import Enum
+import mysql.connector, json, uuid
 import os, hashlib, time, logging
 
 
@@ -222,3 +223,10 @@ def register_messages_in_session(session, errors_or_success, message_type):
     if errors_or_success == 'success':
         session['success'] = create_success_messages(message_type)
         session['success_start'] = time.time()
+
+# 新規登録時の条件分岐をクラスで定義しておく
+class Add_sql_condition(Enum):
+    not_exist_filename_and_management = '0'
+    exist_management = '1'
+    exist_filename = '2'
+    exist_filename_and_management = '3'
