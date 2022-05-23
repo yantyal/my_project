@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename = 'img/favicon.png')}}" />
     <title>ユーザー管理システム</title>
 </head>
 <body>
@@ -107,13 +108,7 @@
         </div>
     </div>
     <!-- フッター -->
-    <div class="login-footer">
-        <div class="container text-center">
-            <p>
-                <small>&copy;2022, ALL Rights Reserved.</small>
-            </p>
-        </div>
-    </div>
+    {% include "footer.html" %}
     <script src="{{url_for('static', filename = 'js/password_mask.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/bootstrap.bundle.min.js')}}"></script>
 </body>

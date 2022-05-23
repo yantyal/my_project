@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{url_for('static', filename = 'img/favicon.png')}}" />
     <title>ユーザー管理システム</title>
 </head>
 <body>
@@ -23,37 +24,7 @@
         </symbol>
     </svg>
     <!-- ナビゲーションバー -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
-        <!-- サブコンポーネント -->
-        <div class="container">
-            <!-- ブランド -->
-            <a href="{{url_for('list.list')}}" class="navbar-brand">ユーザー管理システム</a>
-            <!-- 切り替えボタン -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbar-content">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!-- ナビゲーション -->
-            <div class="collapse navbar-collapse" id="navbar-content">
-                <!-- ナビゲーションメニュー -->
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item ps-2 px-md-2">
-                        <a href="/user/edit/{{session['employee_id']}}" class="nav-link text-white nav-opacity">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill mb-1" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                            </svg>
-                            {{ session['name'] }}
-                        </a>
-                    </li>
-                    <li class="nav-item ps-2 px-md-2">
-                        <a href="{{url_for('logout')}}" class="nav-link text-white nav-opacity">ログアウト</a>
-                    </li>
-                </ul>
-                <!-- ナビゲーションメニュー -->
-            </div>
-        </div>
-        <!-- /サブコンポーネント -->
-    </nav>
+    {% include "nav.html" %}
     <!-- /ナビゲーションバー -->
     <!-- アラート -->
     <div class="error-wrapper mt-2">
@@ -284,13 +255,7 @@
         </form>
     </div>
     <!-- フッター -->
-    <div class="login-footer">
-        <div class="container text-center">
-            <p>
-                <small>&copy;2022, ALL Rights Reserved.</small>
-            </p>
-        </div>
-    </div>
+    {% include "footer.html" %}
 
     <script src="{{url_for('static', filename = 'js/password_mask.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/preview.js')}}"></script>
