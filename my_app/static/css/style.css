@@ -1,6 +1,6 @@
 @charset "UTF-8";
 :root{
-    --body-bg-color: rgba(204, 202, 202, 0.8);
+    --body-bg-color: rgba(240, 244, 249, 0.8);
     --bg-transparent: rgba(0, 0, 0, 0);
     --container-border: rgb(205, 204, 204);
     --edit-btn-color: rgba(90, 50, 155, 0.9);
@@ -232,6 +232,9 @@ input[type="file"] {
 }
 
 /* ナビゲーションバー */
+.navbar-opacity{
+    opacity: 0.92;
+}
 .form-wrapper{
     max-width: 200px;
 }
