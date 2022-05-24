@@ -43,7 +43,7 @@ def connect_db(DB_INFO):
 def select_one(DB_INFO, sql, *args):
     row = None
     conn = connect_db(DB_INFO)
-    cursor = conn.cursor()
+    cursor = conn.cursor(buffered=True)
     try:
         cursor.execute(sql, [arg for arg in args if arg is not None ])
         row = cursor.fetchone()
@@ -154,7 +154,10 @@ def create_users(table, rows):
     for row in rows:
         user = {}
         for t, r in zip(table, row):
-            user[t] = r
+            if t == 'image_file_path':
+                user[t] = "/static/uploads/" + r
+            else:
+                user[t] = r
         users.append(user)
     return users
 
