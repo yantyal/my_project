@@ -127,7 +127,14 @@
                                     {% if user['management'] == 'Y' %}
                                         <tr class="table-info">
                                             <td class="text-nowrap">{{ user['employee_id'] }}</td>
-                                            <td class="text-nowrap">{{ user['name'] }}</td>
+                                            <td class="text-nowrap">
+                                                <div class="d-none d-sm-block">{{ user['name'] }}</div>
+                                                <div class="d-block d-sm-none">
+                                                    <button type="button" class="list-modal-btn-toggle text-primary" data-bs-toggle="modal" data-bs-target="#modal-{{ user['employee_id'] }}">
+                                                        {{ user['name'] }}
+                                                    </button>
+                                                </div>
+                                            </td>
                                             <td class="text-nowrap">{{ user['belong_name'] }}</td>
                                             <td class="text-nowrap text-truncate" style="max-width: 100px;">{{ user['mail_address'] }}</td>
                                             {% if session['management'] == 'Y' %}
@@ -170,7 +177,14 @@
                                     {% if user['management'] != 'Y' %}
                                         <tr class="table-stripe">
                                             <td>{{ user['employee_id'] }}</td>
-                                            <td class="text-nowrap">{{ user['name'] }}</td>
+                                            <td class="text-nowrap">
+                                                <div class="d-none d-sm-block">{{ user['name'] }}</div>
+                                                <div class="d-block d-sm-none">
+                                                    <button type="button" class="list-modal-btn-toggle  text-primary" data-bs-toggle="modal" data-bs-target="#modal-{{ user['employee_id'] }}">
+                                                        {{ user['name'] }}
+                                                    </button>
+                                                </div>
+                                            </td>
                                             <td class="text-nowrap">{{ user['belong_name'] }}</td>
                                             <td class="text-truncate" style="max-width: 150px;">{{ user['mail_address'] }}</td>
                                             {% if session['management'] == 'Y' %}
@@ -216,6 +230,12 @@
                 </div>
             </div>
         </div>
+        <!-- 画面幅が560px以下の場合、ユーザー情報をモーダルで確認できる -->
+        {% if session['users'] %}
+            {% for user in session['users'] %}
+                {% include "list_modal.html" %}
+            {% endfor %}
+        {% endif %}
     </main>
     <!-- フッター -->
     {% include "footer.html" %}
