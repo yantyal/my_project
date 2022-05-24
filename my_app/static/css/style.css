@@ -11,6 +11,9 @@ p,
 h3,
 h4,
 h5,
+th,
+td,
+tr,
 button,
 label,
 input{
@@ -84,6 +87,10 @@ body{
 }
 .delete-btn-color{
     color: var(--delete-btn-color);
+}
+.list-modal-btn-toggle{
+    background-color: var(--bg-transparent);
+    border: none;
 }
 
 /* 新規登録 */
