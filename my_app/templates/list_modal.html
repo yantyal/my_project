@@ -1,0 +1,72 @@
+<div class="modal fade" id="modal-{{ user['employee_id'] }}" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light p-2">
+                <h5 class="modal-title ms-2">ユーザー情報</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-3 p-0">
+                        {% if user['image_file_path'] == '/static/uploads/' %}
+                            <img src="{{url_for('static', filename = 'img/noimage.png')}}" alt="ノーイメージ" class="rounded-pill img-fit" style="width: 120px; height: 120px;">
+                        {% else %}
+                            <img src="{{ user['image_file_path'] }}" alt="社員イメージ画像" class="rounded-pill img-fit" style="width: 120px; height: 120px;">
+                        {% endif %}
+                    </div>
+                    <div class="col-9 p-0 ps-3">
+                        <div class="row">
+                            <div class="col-5">
+                                <p>社員ID</p>
+                            </div>
+                            <div class="col-7 ps-0">
+                                <p>{{ user['employee_id']}}</p>
+                            </div>
+                            <div class="col-5">
+                                <p>名前</p>
+                            </div>
+                            <div class="col-7 ps-0">
+                                <p>
+                                    {{ user['name']}}
+                                    {% if user['management'] == 'Y' %}
+                                        <span class="text-success align-items-center">
+                                            <svg width="16" height="16"><use xlink:href="#check"></use></svg>
+                                        </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-5">
+                                <p>メールアドレス</p>
+                            </div>
+                            <div class="col-7 ps-0">
+                                <p>{{ user['mail_address']}}</p>
+                            </div>
+                            <div class="col-5">
+                                <p>所属先</p>
+                            </div>
+                            <div class="col-7 ps-0">
+                                <p>{{ user['belong_name']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer p-0">
+                {% if session['management'] == 'Y' %}
+                    <form action="/user/edit/{{user['employee_id']}}" method="POST">
+                        <button type="submit" class="text-center btn-item edit-btn-color">
+                            <svg width="16" height="16" class="mb-1"><use xlink:href="#edit"></use></svg>
+                        </button>
+                    </form>
+                    {% if user['management'] != 'Y' %}
+                        <form action="/user/delete/{{user['employee_id']}}" method="POST">
+                            <button type="submit" class="text-center btn-item delete-btn-color delete">
+                                <svg width="16" height="16" class="mb-1"><use xlink:href="#delete"></use></svg>
+                            </button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
