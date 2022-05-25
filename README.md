@@ -6,15 +6,14 @@ Introduction
 　・ 退職した社員も本システムの利用は不可とする。<br>
 　 ※ただし、退職した社員はデータ上保存しておくものとする<br>
 　・ 社員を新規登録できるのは管理者権限を持つユーザーのみとする。<br>
- 
+
  Requirements
  ------------
- 
+
  -   Python >= 3.6
-  
+
  Installation
  ------------
- 
+
        $ pip install -r requirements.txt
 
- 
