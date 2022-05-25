@@ -70,6 +70,9 @@ def edit_result():
         file = request.files['file']
     if file.filename != '':
         filename = save_file(file, file.filename, UPLOAD_FOLDER)
+    if file.filename == filename:
+        register_messages_in_session(session, 'errors', 'file')
+        filename = None
     # 画像更新の際、以前のファイルを削除する
     if session['user']['image_file_path'] != '' and filename is not None:
         remove_file(session['user']['image_file_path'])
