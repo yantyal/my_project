@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-import time
-from my_app.models import (Login_user_info, check_error_in_session, check_success_in_session, register_messages_in_session,
+from my_app.models import (Login_user_info, check_employee_id, check_error_in_session, check_success_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, issue_table, create_hash, remove_file, formatter)
 
 edit_bp = Blueprint('edit', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -21,6 +20,7 @@ def edit(employee_id):
 
     if str(session[Login_user_info.employee_id.value]) != employee_id and session[Login_user_info.management.value] != 'Y':
         return redirect(url_for('list.list'))
+    check_employee_id(employee_id)
 
     check_error_in_session(session)
     check_success_in_session(session)

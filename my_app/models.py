@@ -1,4 +1,4 @@
-from flask import Flask, request, has_request_context
+from flask import Flask, request, has_request_context, abort
 from werkzeug.exceptions import HTTPException
 from datetime import timedelta
 from werkzeug.utils import secure_filename
@@ -242,3 +242,10 @@ class Login_user_info(Enum):
     name = 'name'
     deleted_datetime = 'deleted_datetime'
     management = 'management'
+
+# 編集時不正な文字を受け付けない
+def check_employee_id(employee_id):
+    try:
+        int(employee_id)
+    except:
+        abort(404)
