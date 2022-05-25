@@ -3,8 +3,8 @@ from werkzeug.exceptions import HTTPException
 from datetime import timedelta
 from werkzeug.utils import secure_filename
 from enum import Enum
-import mysql.connector, json, uuid
-import os, hashlib, time, logging
+import mysql.connector, json, time, uuid
+import os, hashlib, logging, bleach
 
 
 def create_app():
@@ -44,8 +44,9 @@ def select_one(DB_INFO, sql, *args):
     row = None
     conn = connect_db(DB_INFO)
     cursor = conn.cursor(buffered=True)
+    print([bleach.clean(arg) for arg in args if arg is not None])
     try:
-        cursor.execute(sql, [arg for arg in args if arg is not None ])
+        cursor.execute(sql, [bleach.clean(arg) for arg in args if arg is not None ])
         row = cursor.fetchone()
     except(mysql.connector.errors.ProgrammingError) as e:
             print(e)
@@ -59,8 +60,9 @@ def select_all(DB_INFO, sql, *args):
     rows = None
     conn = connect_db(DB_INFO)
     cursor = conn.cursor()
+    print([bleach.clean(arg) for arg in args if arg is not None])
     try:
-        cursor.execute(sql, [arg for arg in args if arg != ''])
+        cursor.execute(sql, [bleach.clean(arg) for arg in args if arg != ''])
         rows = cursor.fetchall()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)
@@ -73,9 +75,9 @@ def select_all(DB_INFO, sql, *args):
 def change_tbl(DB_INFO, sql, *args):
     conn = connect_db(DB_INFO)
     cursor = conn.cursor()
-    print([arg for arg in args if arg is not None])
+    print([bleach.clean(arg) for arg in args if arg is not None])
     try:
-        cursor.execute(sql, [arg for arg in args if arg is not None])
+        cursor.execute(sql, [bleach.clean(arg) for arg in args if arg is not None])
         conn.commit()
     except(mysql.connector.errors.ProgrammingError) as e:
         print(e)

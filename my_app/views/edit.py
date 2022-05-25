@@ -74,7 +74,7 @@ def edit_result():
         register_messages_in_session(session, 'errors', 'file')
         filename = None
     # 画像更新の際、以前のファイルを削除する
-    if session['user']['image_file_path'] != '' and filename is not None:
+    if session['user']['image_file_path'] != '/static/uploads/' and filename is not None:
         remove_file(session['user']['image_file_path'])
     employee_id = request.form['employee_id']
     sql = issue_sql('edit_check')
