@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-import time
 from my_app.models import (Add_sql_condition, Login_user_info, check_error_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, create_hash, formatter)
 
@@ -42,6 +41,9 @@ def add():
             file = request.files['file']
         if file.filename != '':
             filename = save_file(file, file.filename, UPLOAD_FOLDER)
+        if file.filename == filename:
+            register_messages_in_session(session, 'errors', 'file')
+            filename = None
         sql = issue_sql('add_check')
         row = select_one(DB_INFO, sql, mail_address, password)
         formatter.set_employee_id(session)
