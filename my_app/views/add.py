@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-from my_app.enum import transition_redirect_target, transition_render_template_target
-from my_app.models import (Add_sql_condition, Login_user_info, check_error_in_session, check_success_in_session, register_messages_in_session,
+from my_app.enum import (transition_redirect_target, transition_render_template_target, Add_sql_condition,
+Login_user_info)
+from my_app.models import (check_error_in_session, check_success_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, create_hash, formatter)
 
 add_bp = Blueprint('add', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -10,10 +11,10 @@ add_bp = Blueprint('add', __name__, url_prefix='/user', template_folder='my_app.
 # 新規登録前処理
 @add_bp.before_request
 def user_load():
-    if Login_user_info.name.value not in session:
+    if Login_user_info.NAME.value not in session:
         return redirect(url_for(transition_redirect_target.LOGIN.value))
 
-    if session[Login_user_info.management.value] != 'Y':
+    if session[Login_user_info.MANAGEMENT.value] != 'Y':
         return redirect(url_for(transition_redirect_target.LIST.value))
 
 
@@ -58,13 +59,13 @@ def add():
         return redirect(url_for(transition_redirect_target.ADD.value))
 
     if not filename and  management != 'Y':
-        sql = issue_sql('add', Add_sql_condition.not_exist_filename_and_management.value)
+        sql = issue_sql('add', Add_sql_condition.NOT_EXIST_FILENAME_AND_MANAGEMENT.value)
     elif not filename and management == 'Y':
-        sql = issue_sql('add', Add_sql_condition.exist_management.value)
+        sql = issue_sql('add', Add_sql_condition.EXIST_MANAGEMENT.value)
     elif filename and management != 'Y':
-        sql = issue_sql('add', Add_sql_condition.exist_filename.value)
+        sql = issue_sql('add', Add_sql_condition.EXIST_FILENAME.value)
     else:
-        sql = issue_sql('add', Add_sql_condition.exist_filename_and_management.value)
+        sql = issue_sql('add', Add_sql_condition.EXIST_FILENAME_AND_MANAGEMENT.value)
     change_tbl(DB_INFO, sql, name, belong_id, mail_address, password, filename, management)
 
     register_messages_in_session(session, 'success', 'add')

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-from my_app.enum import transition_redirect_target, transition_render_template_target
-from my_app.models import (Login_user_info, check_employee_id, check_error_in_session, check_success_in_session, register_messages_in_session,
+from my_app.enum import (transition_redirect_target, transition_render_template_target, Login_user_info)
+from my_app.models import (check_employee_id, check_error_in_session, check_success_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, issue_table, create_hash, remove_file, formatter)
 
 edit_bp = Blueprint('edit', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -10,7 +10,7 @@ edit_bp = Blueprint('edit', __name__, url_prefix='/user', template_folder='my_ap
 # 編集前処理
 @edit_bp.before_request
 def user_load():
-    if Login_user_info.name.value not in session:
+    if Login_user_info.NAME.value not in session:
         return redirect(url_for(transition_redirect_target.LOGIN.value))
 
 
@@ -19,7 +19,7 @@ def user_load():
 def edit(employee_id):
     DB_INFO = current_app.config['DB_INFO']
 
-    if str(session[Login_user_info.employee_id.value]) != employee_id and session[Login_user_info.management.value] != 'Y':
+    if str(session[Login_user_info.EMPLOYEE_ID.value]) != employee_id and session[Login_user_info.MANAGEMENT.value] != 'Y':
         return redirect(url_for(transition_redirect_target.LIST.value))
     check_employee_id(employee_id)
 
@@ -50,7 +50,7 @@ def edit_result():
     DB_INFO = current_app.config['DB_INFO']
     UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
 
-    if str(session[Login_user_info.employee_id.value]) != str(session['user']['employee_id']) and session[Login_user_info.management.value] != 'Y':
+    if str(session[Login_user_info.EMPLOYEE_ID.value]) != str(session['user']['employee_id']) and session[Login_user_info.MANAGEMENT.value] != 'Y':
         return redirect(url_for(transition_redirect_target.LIST.value))
 
     name = request.form['name']
@@ -119,7 +119,7 @@ def change_password():
     confirm_password = request.form['confirm_password']
     employee_id = request.form['employee_id']
 
-    if str(session[Login_user_info.employee_id.value]) != employee_id and session[Login_user_info.management.value] != 'Y':
+    if str(session[Login_user_info.EMPLOYEE_ID.value]) != employee_id and session[Login_user_info.MANAGEMENT.value] != 'Y':
         return redirect(url_for(transition_redirect_target.LIST.value))
 
     if old_password == "" or new_password == "" or confirm_password == "" or employee_id == "":

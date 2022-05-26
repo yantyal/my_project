@@ -1,9 +1,8 @@
 from flask import Blueprint, redirect, url_for
 from flask import session, current_app
 from datetime import datetime
-from my_app.enum import transition_redirect_target
-from my_app.models import (Login_user_info, change_tbl, issue_sql, register_messages_in_session,
-formatter)
+from my_app.enum import (transition_redirect_target, Login_user_info)
+from my_app.models import (change_tbl, issue_sql, register_messages_in_session, formatter)
 
 delete_bp = Blueprint('delete', __name__, url_prefix='/user', template_folder='my_app.templates')
 
@@ -11,7 +10,7 @@ delete_bp = Blueprint('delete', __name__, url_prefix='/user', template_folder='m
 # 削除前処理
 @delete_bp.before_request
 def user_load():
-    if session[Login_user_info.management.value] != 'Y':
+    if session[Login_user_info.MANAGEMENT.value] != 'Y':
         return redirect(url_for(transition_redirect_target.LIST.value))
 
 

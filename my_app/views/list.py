@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-from my_app.enum import transition_redirect_target, transition_render_template_target
-from my_app.models import (Login_user_info, check_error_in_session, check_success_in_session,
+from my_app.enum import transition_redirect_target, transition_render_template_target, Login_user_info
+from my_app.models import (check_error_in_session, check_success_in_session,
 create_sql_condition, create_users, issue_table, register_messages_in_session, select_all,
 issue_sql, formatter)
 
@@ -10,7 +10,7 @@ list_bp = Blueprint('list', __name__, url_prefix='/user', template_folder='my_ap
 # 社員一覧リスト前処理
 @list_bp.before_request
 def user_load():
-    if Login_user_info.name.value not in session:
+    if Login_user_info.NAME.value not in session:
         return redirect(url_for(transition_redirect_target.LOGIN.value))
 
 # 社員一覧リスト

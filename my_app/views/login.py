@@ -2,9 +2,9 @@ from flask import render_template, redirect, url_for, make_response
 from flask import request, session, current_app
 from datetime import datetime
 import json
-from my_app.enum import transition_redirect_target, transition_render_template_target
-from my_app.models import (Login_user_info, check_error_in_session,issue_table,
-register_messages_in_session, select_one, issue_sql, create_hash)
+from my_app.enum import (transition_redirect_target, transition_render_template_target, Login_user_info)
+from my_app.models import (check_error_in_session,issue_table, register_messages_in_session,
+select_one, issue_sql, create_hash)
 from flask import Blueprint, render_template
 
 login_bp = Blueprint('login', __name__, url_prefix='/login', template_folder='my_app.templates')
@@ -13,7 +13,7 @@ login_bp = Blueprint('login', __name__, url_prefix='/login', template_folder='my
 @login_bp.before_request
 def user_load():
     if request.method == 'GET':
-        if Login_user_info.name.value in session:
+        if Login_user_info.NAME.value in session:
             return redirect(url_for(transition_redirect_target.LIST.value))
 
 
