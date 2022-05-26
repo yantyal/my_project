@@ -229,20 +229,6 @@ def register_messages_in_session(session, errors_or_success, message_type):
         session['success'] = create_success_messages(message_type)
         session['success_start'] = time.time()
 
-# 新規登録時の条件分岐をクラスで定義しておく
-class Add_sql_condition(Enum):
-    not_exist_filename_and_management = '0'
-    exist_management = '1'
-    exist_filename = '2'
-    exist_filename_and_management = '3'
-
-# ログイン時にセッションに残すユーザー情報を定義しておく
-class Login_user_info(Enum):
-    employee_id = 'employee_id'
-    name = 'name'
-    deleted_datetime = 'deleted_datetime'
-    management = 'management'
-
 # 編集時不正な文字を受け付けない
 def check_employee_id(employee_id):
     try:
