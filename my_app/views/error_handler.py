@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, url_for
 from flask import session, current_app
 from werkzeug.exceptions import HTTPException
+from my_app.enum import transition_redirect_target
 from my_app.models import (Login_user_info, register_messages_in_session, formatter)
 
 exception_bp = Blueprint('exception', __name__, template_folder='my_app.templates')
@@ -13,8 +14,8 @@ def page_not_found(error):
     formatter.set_employee_id(session)
     current_app.logger.info(session['errors'])
     if Login_user_info.name.value not in session:
-        return redirect(url_for('login.login'))
-    return redirect(url_for('list.list'))
+        return redirect(url_for(transition_redirect_target.LOGIN.value))
+    return redirect(url_for(transition_redirect_target.LIST.value))
 
 
 # 汎用的なエラーハンドラー
@@ -24,5 +25,5 @@ def error_handler(error):
     formatter.set_employee_id(session)
     current_app.logger.info(session['errors'])
     if Login_user_info.name.value not in session:
-        return redirect(url_for('login.login'))
-    return redirect(url_for('list.list'))
+        return redirect(url_for(transition_redirect_target.LOGIN.value))
+    return redirect(url_for(transition_redirect_target.LIST.value))
