@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-from my_app.enum import (transition_redirect_target, transition_render_template_target, Add_sql_condition,
+from my_app.enum import (sql_name, transition_redirect_target, transition_render_template_target, Add_sql_condition,
 Login_user_info)
 from my_app.models import (check_error_in_session, check_success_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, create_hash, formatter)
@@ -47,7 +47,7 @@ def add():
         if file.filename == filename:
             register_messages_in_session(session, 'errors', 'file')
             filename = None
-        sql = issue_sql('add_check')
+        sql = issue_sql(sql_name.ADD_CHECK.value)
         row = select_one(DB_INFO, sql, mail_address, password)
         formatter.set_employee_id(session)
         current_app.logger.info(sql)
@@ -59,13 +59,13 @@ def add():
         return redirect(url_for(transition_redirect_target.ADD.value))
 
     if not filename and  management != 'Y':
-        sql = issue_sql('add', Add_sql_condition.NOT_EXIST_FILENAME_AND_MANAGEMENT.value)
+        sql = issue_sql(sql_name.ADD.value, Add_sql_condition.NOT_EXIST_FILENAME_AND_MANAGEMENT.value)
     elif not filename and management == 'Y':
-        sql = issue_sql('add', Add_sql_condition.EXIST_MANAGEMENT.value)
+        sql = issue_sql(sql_name.ADD.value, Add_sql_condition.EXIST_MANAGEMENT.value)
     elif filename and management != 'Y':
-        sql = issue_sql('add', Add_sql_condition.EXIST_FILENAME.value)
+        sql = issue_sql(sql_name.ADD.value, Add_sql_condition.EXIST_FILENAME.value)
     else:
-        sql = issue_sql('add', Add_sql_condition.EXIST_FILENAME_AND_MANAGEMENT.value)
+        sql = issue_sql(sql_name.ADD.value, Add_sql_condition.EXIST_FILENAME_AND_MANAGEMENT.value)
     change_tbl(DB_INFO, sql, name, belong_id, mail_address, password, filename, management)
 
     register_messages_in_session(session, 'success', 'add')

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-from my_app.enum import transition_redirect_target, transition_render_template_target, Login_user_info
+from my_app.enum import (transition_redirect_target, transition_render_template_target,
+Login_user_info, sql_name, table_name)
 from my_app.models import (check_error_in_session, check_success_in_session,
 create_sql_condition, create_users, issue_table, register_messages_in_session, select_all,
 issue_sql, formatter)
@@ -25,9 +26,9 @@ def list():
             if session['sort'] == 'sort':
                 session.pop('sort', None)
                 return render_template(transition_render_template_target.LIST.value)
-        sql = issue_sql('list')
+        sql = issue_sql(sql_name.LIST.value)
         rows = select_all(DB_INFO, sql)
-        table = issue_table('list')
+        table = issue_table(table_name.LIST.value)
         session["users"] = create_users(table, rows)
         formatter.set_employee_id(session)
         current_app.logger.info(sql)
@@ -46,7 +47,7 @@ def list():
         if 'belong_id' in request.form:
             belong_id = request.form['belong_id']
         sql_condition = create_sql_condition(sort_employee_id, sort_name, belong_id)
-        sql = issue_sql('sort', sql_condition)
+        sql = issue_sql(sql_name.SORT.value, sql_condition)
         rows = select_all(DB_INFO, sql, sort_employee_id, sort_name, belong_id)
         formatter.set_employee_id(session)
         current_app.logger.info(sql)
@@ -61,7 +62,7 @@ def list():
         formatter.set_employee_id(session)
         current_app.logger.info('Logout.')
 
-    table = issue_table('list')
+    table = issue_table(table_name.LIST.value)
     session["users"] = create_users(table, rows)
 
     session['sort'] = 'sort'

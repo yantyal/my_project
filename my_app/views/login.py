@@ -2,7 +2,8 @@ from flask import render_template, redirect, url_for, make_response
 from flask import request, session, current_app
 from datetime import datetime
 import json
-from my_app.enum import (transition_redirect_target, transition_render_template_target, Login_user_info)
+from my_app.enum import (transition_redirect_target, transition_render_template_target,
+Login_user_info, sql_name, table_name)
 from my_app.models import (check_error_in_session,issue_table, register_messages_in_session,
 select_one, issue_sql, create_hash)
 from flask import Blueprint, render_template
@@ -32,9 +33,9 @@ def login():
         user_info = json.loads(user_info)
         mail_address = user_info['mail_address']
         password = user_info['password']
-        sql = issue_sql('login')
+        sql = issue_sql(sql_name.LOGIN.value)
         row = select_one(DB_INFO, sql, mail_address, password)
-        table = issue_table('login')
+        table = issue_table(table_name.LOGIN.value)
         current_app.logger.info(sql)
 
         # ログインが拒否された場合はリダイレクト先を変える
@@ -59,9 +60,9 @@ def login():
         check_cookie = request.form.getlist('check_cookie')
         if len(check_cookie) != 0:
             check_cookie = check_cookie[0]
-        sql = issue_sql('login')
+        sql = issue_sql(sql_name.LOGIN.value)
         row = select_one(DB_INFO, sql, mail_address, password)
-        table = issue_table('login')
+        table = issue_table(table_name.LOGIN.value)
         current_app.logger.info(sql)
 
     # ログインが拒否された場合はリダイレクト先を変える

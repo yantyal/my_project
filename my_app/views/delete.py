@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, url_for
 from flask import session, current_app
 from datetime import datetime
-from my_app.enum import (transition_redirect_target, Login_user_info)
+from my_app.enum import (sql_name, transition_redirect_target, Login_user_info)
 from my_app.models import (change_tbl, issue_sql, register_messages_in_session, formatter)
 
 delete_bp = Blueprint('delete', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -20,7 +20,7 @@ def delete(employee_id):
     DB_INFO = current_app.config['DB_INFO']
 
     deleted_datetime = datetime.now().strftime('%Y-%m-%d')
-    sql = issue_sql('delete')
+    sql = issue_sql(sql_name.DELETE.value)
     change_tbl(DB_INFO, sql, deleted_datetime, employee_id)
     formatter.set_employee_id(session)
     current_app.logger.info(sql)

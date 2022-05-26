@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-from my_app.enum import (transition_redirect_target, transition_render_template_target, Login_user_info)
+from my_app.enum import (transition_redirect_target, transition_render_template_target,
+Login_user_info, sql_name, table_name)
 from my_app.models import (check_employee_id, check_error_in_session, check_success_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, issue_table, create_hash, remove_file, formatter)
 
@@ -26,9 +27,9 @@ def edit(employee_id):
     check_error_in_session(session)
     check_success_in_session(session)
 
-    sql = issue_sql('edit_user_info')
+    sql = issue_sql(sql_name.EDIT_USER_INFO.value)
     row = select_one(DB_INFO, sql, employee_id)
-    table = issue_table('edit')
+    table = issue_table(table_name.EDIT.value)
     formatter.set_employee_id(session)
     current_app.logger.info(sql)
     user = {}
@@ -78,7 +79,7 @@ def edit_result():
     if session['user']['image_file_path'] != '/static/uploads/' and filename is not None:
         remove_file(session['user']['image_file_path'])
     employee_id = request.form['employee_id']
-    sql = issue_sql('edit_check')
+    sql = issue_sql(sql_name.EDIT_CHECK.value)
     row = select_one(DB_INFO, sql, mail_address, password)
     if row is not None:
         row = str(row[0]) # employee_idを取り出している
@@ -138,7 +139,7 @@ def change_password():
         return redirect(url_for(transition_redirect_target.EDIT.value, employee_id=employee_id))
 
     new_password = create_hash(new_password)
-    sql = issue_sql('change_password')
+    sql = issue_sql(sql_name.CHANGE_PASSWORD.value)
     formatter.set_employee_id(session)
     current_app.logger.info(sql)
     change_tbl(DB_INFO, sql, new_password, employee_id)
