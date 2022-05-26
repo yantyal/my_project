@@ -98,7 +98,7 @@ body{
 
 /* 新規登録 */
 .add-container{
-    min-height: 440px;
+    min-height: 425px;
 }
 .add-container p{
     font-size: 12px;
@@ -138,6 +138,9 @@ body{
 }
 input[type="file"] {
     display: none;
+}
+.checkbox-label-wrapper{
+    padding-top: 3px;
 }
 
 /* 編集 */

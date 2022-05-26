@@ -1,5 +1,6 @@
 from flask import redirect, url_for
 from flask import session
+from my_app.enum import transition_redirect_target
 from my_app.models import (create_app, formatter)
 import logging
 
@@ -17,7 +18,7 @@ app.logger.addHandler(log_handler)
 @app.route('/')
 def index():
     app.logger.info('From Index To Login.')
-    return redirect(url_for('login.login'))
+    return redirect(url_for(transition_redirect_target.LOGIN.value))
 
 
 # ログアウト
@@ -26,4 +27,4 @@ def logout():
     formatter.set_employee_id(session)
     app.logger.info('Logout.')
     session.clear()
-    return redirect(url_for('login.login'))
+    return redirect(url_for(transition_redirect_target.LOGIN.value))
