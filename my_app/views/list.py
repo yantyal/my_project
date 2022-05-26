@@ -59,7 +59,6 @@ def list():
         register_messages_in_session(session, 'errors', 'list')
         formatter.set_employee_id(session)
         current_app.logger.info('Logout.')
-        return redirect(url_for('list.list'))
 
     table = issue_table('list')
     session["users"] = create_users(table, rows)

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
-from my_app.models import (Add_sql_condition, Login_user_info, check_error_in_session, register_messages_in_session,
+from my_app.models import (Add_sql_condition, Login_user_info, check_error_in_session, check_success_in_session, register_messages_in_session,
 save_file, select_one, change_tbl, issue_sql, create_hash, formatter)
 
 add_bp = Blueprint('add', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -24,6 +24,7 @@ def add():
 
     if request.method == 'GET':
         check_error_in_session(session)
+        check_success_in_session(session)
         return render_template('add.html')
     # 新規登録時にPOSTで受け取る
     if request.method == 'POST':
