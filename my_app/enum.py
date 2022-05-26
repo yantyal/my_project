@@ -1,6 +1,5 @@
 from enum import Enum
 
-from my_app.views.edit import change_password
 
 # render_templateにより画面遷移先HTML
 class transition_render_template_target(Enum):
