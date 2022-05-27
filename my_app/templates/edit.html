@@ -70,7 +70,7 @@
                                     <p class="mb-1">詳細情報は上のタブをクリックして編集することができます。</p>
                                     <p class="text-center">
                                         <span class="text-danger">※</span>パスワードは、
-                                        <button type="button" class="modal-btn-toggle text-danger p-0" data-bs-toggle="modal" data-bs-target="#modal">こちら</button>
+                                        <button type="button" class="modal-btn-toggle text-danger p-0" id="show-modal" data-bs-toggle="modal" data-bs-target="#modal">こちら</button>
                                         から更新できます。
                                     </p>
                                 </div>
@@ -94,7 +94,7 @@
                                             <label class="file-label">
                                                 <input type="file" name="file" id="file" class="btn-sm">ファイルを選択
                                             </label>
-                                            <p id="error-message" class="m-2" style="color: red;"></p>
+                                            <p id="error-message" class="text-danger m-2"></p>
                                         </div>
                                     </div>
                                     <!-- 所属部署選択 -->
@@ -142,12 +142,18 @@
         </div>
     </div>
     <!-- パスワード更新用モーダル -->
+    {% if session['errors'] %}
+        <input type="hidden" id="error_change_password" value="{{session['errors']}}">
+    {% else %}
+        <input type="hidden" id="error_change_password" value="">
+    {% endif %}
     <div class="modal fade" id="modal" tabindex="-1">
         <form action="{{url_for('edit.change_password')}}" method="POST">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-light px-3 py-2">
                         <h5 class="modal-title text-success">パスワード変更</h5>
+                        <div id="password-error-message"></div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body py-4">
@@ -221,6 +227,7 @@
     <script src="{{url_for('static', filename = 'js/password_mask.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/preview.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/belong_name_checked.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/show_password_error.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/bootstrap.bundle.min.js')}}"></script>
 </body>
 </html>
