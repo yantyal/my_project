@@ -98,7 +98,7 @@ body{
 
 /* 新規登録 */
 .add-container{
-    min-height: 425px;
+    min-height: 420px;
 }
 .add-container p{
     font-size: 12px;
@@ -118,6 +118,23 @@ body{
     color: #040404 !important;
 }
 .add-container-wrapper .container{
+    background-color: white;
+}
+.add-container-wrapper-md{
+    min-width: 700px;
+    max-width: 720px;
+    border: 1px var(--container-border) solid;
+    margin: auto;
+}
+.add-container-wrapper-md a{
+    font-weight: bold;
+    color: #dc3545 !important;
+    text-align: center;
+}
+.add-container-wrapper-md .detail{
+    color: #040404 !important;
+}
+.add-container-wrapper-md .container{
     background-color: white;
 }
 .img-fit{
@@ -208,11 +225,11 @@ input[type="file"] {
 
 /* アラート */
 .error-wrapper{
-    height: 70px;
+    height: 60px;
 }
 .error-wrapper .container{
     background-color: var(--body-bg-color);
-    z-index: 3;
+    z-index: 11;
 }
 /* エラー文表示 */
 .alert-wrapper{
