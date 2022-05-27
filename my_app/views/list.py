@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask import request, session, current_app
 from my_app.enum import (transition_redirect_target, transition_render_template_target,
 Login_user_info, sql_name, table_name)
-from my_app.models import (check_error_in_session, check_success_in_session,
-create_sql_condition, create_users, issue_table, register_messages_in_session, select_all,
+from my_app.models import (check_error_in_session, check_sort_placeholder_in_session, check_success_in_session,
+create_sql_condition, create_users, issue_table, register_messages_in_session, register_sort_placeholder_in_session, select_all,
 issue_sql, formatter)
 
 list_bp = Blueprint('list', __name__, url_prefix='/user', template_folder='my_app.templates')
@@ -22,6 +22,7 @@ def list():
     if request.method == 'GET':
         check_error_in_session(session, 0.2)
         check_success_in_session(session)
+        check_sort_placeholder_in_session(session)
         if 'sort' in session:
             if session['sort'] == 'sort':
                 session.pop('sort', None)
@@ -44,6 +45,7 @@ def list():
                 return redirect(url_for(transition_redirect_target.LIST.value))
             sort_employee_id = sort
             sort_name = '%' + sort + '%'
+        register_sort_placeholder_in_session(session, sort_employee_id)
         if 'belong_id' in request.form:
             belong_id = request.form['belong_id']
         sql_condition = create_sql_condition(sort_employee_id, sort_name, belong_id)

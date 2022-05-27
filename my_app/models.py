@@ -235,3 +235,16 @@ def check_employee_id(employee_id):
         int(employee_id)
     except:
         abort(404)
+
+# セッションに検索した時の内容を登録する
+def register_sort_placeholder_in_session(session, sort_placeholder):
+    session['sort_placeholder'] = sort_placeholder
+    session['sort_start'] = time.time()
+
+# セッションに検索した時の内容があれば削除する
+def check_sort_placeholder_in_session(session, meantime = 1):
+    end = time.time()
+    if 'sort_start' in session:
+        if end - session['sort_start'] >= meantime:
+            session.pop('sort_placeholder', None)
+            session.pop('sort_start', None)
