@@ -144,6 +144,13 @@ input[type="file"] {
 }
 
 /* 編集 */
+.edit-container{
+    min-height: 390px;
+}
+.edit-container p{
+    font-size: 12px;
+    color: rgb(134, 135, 136);
+}
 .edit-container-wrapper{
     max-width: 400px;
     border: 1px var(--container-border) solid;
@@ -158,6 +165,23 @@ input[type="file"] {
     color: #040404 !important;
 }
 .edit-container-wrapper .container{
+    background-color: white;
+}
+.edit-container-wrapper-md{
+    min-width: 700px;
+    max-width: 725px;
+    border: 1px var(--container-border) solid;
+    margin: auto;
+}
+.edit-container-wrapper-md a{
+    font-weight: bold;
+    color: #198754 !important;
+    text-align: center;
+}
+.edit-container-wrapper-md .detail{
+    color: #040404 !important;
+}
+.edit-container-wrapper-md .container{
     background-color: white;
 }
 
