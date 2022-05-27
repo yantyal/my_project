@@ -20,11 +20,11 @@
     <!-- アラート -->
     {% include "alert.html" %}
 
-    <div class="pt-0">
+    <div class="pt-0 d-block d-md-none">
         <div class="rounded-3 shadow mb-4 edit-container-wrapper">
             <!-- フォーム -->
             <form action="{{url_for('edit.edit_result')}}" method="POST" enctype="multipart/form-data">
-                <div class="container p-3 add-container">
+                <div class="container p-3 edit-container">
                     <!-- タブ型ナビゲーション -->
                     <div class="nav nav-tabs" id="tab-menus">
                         <!-- タブ01 -->
@@ -46,7 +46,7 @@
                                                 名前を入力してください。
                                             </label>
                                         </div>
-                                        <input type="text" name="name"  value="{{ session['user']['name'] }}" class="form-control rounded-0 border-top-0 border-end-0 border-start-0" id="name" required>
+                                        <input type="text" name="name"  value="{{ session['user']['name'] }}" class="form-control rounded-0 border-top-0 border-end-0 border-start-0 name" id="name" required>
                                     </div>
                                     <!-- メールアドレス -->
                                     <div class="row px-5 py-1">
@@ -55,7 +55,7 @@
                                                 メールアドレスを入力してください。
                                             </label>
                                         </div>
-                                        <input type="email" name="mail_address" value="{{ session['user']['mail_address'] }}" class="form-control rounded-0 border-top-0 border-end-0 border-start-0" id="email" required>
+                                        <input type="email" name="mail_address" value="{{ session['user']['mail_address'] }}" class="form-control rounded-0 border-top-0 border-end-0 border-start-0 email" id="email" required>
                                     </div>
                                     <!-- パスワード -->
                                     <input type="hidden" name="password">
@@ -70,7 +70,7 @@
                                     <p class="mb-1">詳細情報は上のタブをクリックして編集することができます。</p>
                                     <p class="text-center">
                                         <span class="text-danger">※</span>パスワードは、
-                                        <button type="button" class="modal-btn-toggle text-danger p-0" data-bs-toggle="modal" data-bs-target="#modal">こちら</button>
+                                        <button type="button" class="modal-btn-toggle text-danger p-0 show-modal" data-bs-toggle="modal" data-bs-target="#modal">こちら</button>
                                         から更新できます。
                                     </p>
                                 </div>
@@ -84,17 +84,17 @@
                                     <div class="row mb-2">
                                         <div class="col-5">
                                             {% if session['user']['image_file_path'] == '/static/uploads/' %}
-                                                <img src="{{url_for('static', filename = 'img/noimage.png')}}" alt="社員イメージ画像" id="preview" class="rounded-pill img-fit">
+                                                <img src="{{url_for('static', filename = 'img/noimage.png')}}" alt="社員イメージ画像" class="rounded-pill img-fit preview">
                                             {% else %}
-                                                <img src="{{ session['user']['image_file_path'] }}" alt="社員イメージ画像" id="preview" class="rounded-pill img-fit">
+                                                <img src="{{ session['user']['image_file_path'] }}" alt="社員イメージ画像" class="rounded-pill img-fit preview">
                                             {% endif %}
                                             </div>
                                         <div class="col-7 text-center">
                                             <p class="mb-4">写真をアップロードできます</p>
                                             <label class="file-label">
-                                                <input type="file" name="file" id="file" class="btn-sm">ファイルを選択
+                                                <input type="file" name="file" class="btn-sm file">ファイルを選択
                                             </label>
-                                            <p id="error-message" class="m-2" style="color: red;"></p>
+                                            <p class="text-danger m-2 error-message"></p>
                                         </div>
                                     </div>
                                     <!-- 所属部署選択 -->
@@ -104,7 +104,7 @@
                                         </div>
                                         <div class="col-6">
                                             <input type="hidden" value="{{ session['user']['belong_id'] }}" id="user_belong_id">
-                                            <select name="belong_id" id="belong_id" class="form-select form-select-sm mb-2">
+                                            <select name="belong_id" class="form-select form-select-sm mb-2 belong_id">
                                                 <option value="0">未定</option>
                                                 <option value="1">総務課</option>
                                                 <option value="2">BS事業部</option>
@@ -122,9 +122,9 @@
                                     <div class="checkbox-wrapper mb-2">
                                         <div class="form-check form-check-inline">
                                             {% if session['user']['management'] == 'Y' %}
-                                                <input type="checkbox" class="form-check-input" name="management" value="Y" id="checkbox" checked>
+                                                <input type="checkbox" class="form-check-input management" name="management" value="Y" id="checkbox" checked>
                                             {% else %}
-                                                <input type="checkbox" class="form-check-input" name="management" id="checkbox" value="Y">
+                                                <input type="checkbox" class="form-check-input management" name="management" id="checkbox" value="Y">
                                             {% endif %}
                                             <div class="checkbox-label-wrapper">
                                                 <label for="checkbox" class="form-check-label">管理者権限を付与する場合はチェックしてください</label>
@@ -141,13 +141,131 @@
             <!-- /フォーム -->
         </div>
     </div>
+    <div class="pt-0 d-none d-md-block">
+        <div class="rounded-3 shadow mb-4 edit-container-wrapper-md">
+            <!-- フォーム -->
+            <form action="{{url_for('edit.edit_result')}}" method="POST" enctype="multipart/form-data">
+                <div class="container p-3 edit-container">
+                    <!-- タブ型ナビゲーション -->
+                    <div class="nav nav-tabs" id="tab-menus">
+                        <!-- タブ01 -->
+                        <a href="#panel-menu01" id="tab-menu01" class="nav-item nav-link active" data-bs-toggle="tab">編集</a>
+                    </div>
+                    <!-- /タブ型ナビゲーション -->
+                    <!-- タブパネル -->
+                    <div class="tab-content" id="panel-menus">
+                        <!-- パネル01 -->
+                        <div class="tab-pane fade show active border border-top-0" id="panel-menu01">
+                            <div class="row">
+                                <div class="col pe-0">
+                                    <div class="py-3">
+                                        <div class="container ps-2 p-0">
+                                            <!-- 名前 -->
+                                            <div class="row px-5 py-1">
+                                                <div class="label-wrapper">
+                                                    <label for="name2" class="col-form-label">
+                                                        名前を入力してください。
+                                                    </label>
+                                                </div>
+                                                <input type="text" name="name" class="form-control rounded-0 border-top-0 border-end-0 border-start-0 name" id="name2" required>
+                                            </div>
+                                            <!-- メールアドレス -->
+                                            <div class="row px-5 py-1">
+                                                <div class="label-wrapper">
+                                                    <label for="email2" class="col-form-label">
+                                                        メールアドレスを入力してください。
+                                                    </label>
+                                                </div>
+                                                <input type="email" name="mail_address" class="form-control rounded-0 border-top-0 border-end-0 border-start-0 email" id="email2" required>
+                                            </div>
+                                            <!-- パスワード -->
+                                            <input type="hidden" name="password">
+                                            <!-- 社員ID -->
+                                            <input type="hidden" name="employee_id" value="{{ session['user']['employee_id'] }}">
+                                            <!-- 確認ボタン -->
+                                            <div class="row py-3 mb-1">
+                                                <div class="text-center">
+                                                    <button class="btn btn-success text-white" type="submit">更新</button>
+                                                </div>
+                                            </div>
+                                            <p class="text-center">
+                                                <span class="text-danger">※</span>パスワードは、
+                                                <button type="button" class="modal-btn-toggle text-danger p-0 show-modal" data-bs-toggle="modal" data-bs-target="#modal">こちら</button>
+                                                から更新できます。
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col ps-0">
+                                    <div class="py-3">
+                                        <div class="container pe-2 p-0">
+                                            <!-- 写真アップロード -->
+                                            <div class="row mb-2">
+                                                <div class="col-5">
+                                                    <img src="" alt="社員イメージ画像" id="preview" class="rounded-pill img-fit preview">
+                                                    </div>
+                                                <div class="col-7 text-center">
+                                                    <p class="mb-4">写真をアップロードできます</p>
+                                                    <label class="file-label">
+                                                        <input type="file" name="file" class="btn-sm file">ファイルを選択
+                                                    </label>
+                                                    <p class="text-danger m-2 error-message"></p>
+                                                </div>
+                                            </div>
+                                            <!-- 所属部署選択 -->
+                                            <div class="row">
+                                                <div class="col-6 pe-0">
+                                                    <p class="mt-2">所属部署を選択してください</p>
+                                                </div>
+                                                <div class="col-6">
+                                                    <select name="belong_id" class="form-select form-select-sm mb-2 belong_id">
+                                                        <option value="0">未定</option>
+                                                        <option value="1">総務課</option>
+                                                        <option value="2">BS事業部</option>
+                                                        <option value="3">CS事業部</option>
+                                                        <option value="4">営業課</option>
+                                                        <option value="5">1課</option>
+                                                        <option value="6">2課</option>
+                                                        <option value="7">3課</option>
+                                                        <option value="8">4課</option>
+                                                        <option value="9">5課</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!-- 管理者権限用チェックボックス -->
+                                            <div class="checkbox-wrapper mb-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" class="form-check-input management" name="management" id="checkbox2" value="Y">
+                                                    <div class="checkbox-label-wrapper">
+                                                        <label for="checkbox2" class="form-check-label">管理者権限を付与する場合はチェックしてください</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /タブパネル -->
+                </div>
+            </form>
+            <!-- /フォーム -->
+        </div>
+    </div>
     <!-- パスワード更新用モーダル -->
+    {% if session['errors'] %}
+        <input type="hidden" id="error_change_password" value="{{session['errors']}}">
+    {% else %}
+        <input type="hidden" id="error_change_password" value="">
+    {% endif %}
     <div class="modal fade" id="modal" tabindex="-1">
         <form action="{{url_for('edit.change_password')}}" method="POST">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-light px-3 py-2">
                         <h5 class="modal-title text-success">パスワード変更</h5>
+                        <div id="password-error-message"></div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body py-4">
@@ -221,6 +339,8 @@
     <script src="{{url_for('static', filename = 'js/password_mask.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/preview.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/belong_name_checked.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/show_password_error.js')}}"></script>
+    <script src="{{url_for('static', filename = 'js/match_edit.js')}}"></script>
     <script src="{{url_for('static', filename = 'js/bootstrap.bundle.min.js')}}"></script>
 </body>
 </html>
