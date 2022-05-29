@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     })
     //  パスワードを一致させる
-    passwords = document.getElementsByClassName('password');
+    passwords = document.getElementsByClassName('add-password');
     if (passwords != null){
         passwords[1].value = passwords[0].value;
         passwords[0].addEventListener('change', function(){
